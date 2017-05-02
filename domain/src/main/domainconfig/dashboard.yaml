@@ -1,0 +1,6 @@
+name: Dashboard
+fields:
+ - name: id
+   type: Integer
+ - name: title
+   type: String

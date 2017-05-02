@@ -2,11 +2,8 @@ package com.szmg.grafana;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.szmg.grafana.domain.Dashboard;
-import com.szmg.grafana.domain.Row;
 import com.szmg.grafana.domain.Something;
-import com.szmg.grafana.domain.panel.Text;
-import com.szmg.some.stuff.IAmGenerated;
+import com.szmg.grafana.domain.gen.Dashboard;
 
 import java.io.IOException;
 
@@ -15,25 +12,15 @@ public class DashboardWriter {
     public static void main(String args[]) throws IOException {
         System.out.println("Hello! :)");
 
-        Text p1 = new Text();
-
-        Row row = new Row();
-        row.getPanels().add(p1);
-
-        Dashboard d = new Dashboard();
-        d.getRows().add(row);
-
-        Something s = new Something();
-        s.setName("mate");
-        s.addValue("newFiled", "ok");
+        Dashboard s = new Dashboard();
+        s.setTitle("mate");
+        s.addValue("newField", 33);
 
         ObjectMapper mapper = new ObjectMapper();
 
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
-//        System.out.println(mapper.writeValueAsString(d));
         System.out.println(mapper.writeValueAsString(s));
 
-        new IAmGenerated().callMe();
     }
 
 }

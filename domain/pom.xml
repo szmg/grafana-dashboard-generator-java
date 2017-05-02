@@ -11,6 +11,13 @@
 
     <artifactId>domain</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -23,7 +30,12 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <title>Something</title>
+                            <packageName>com.szmg.grafana.domain.gen</packageName>
+                            <descriptors>
+                                <descriptor>
+                                    <directory>${project.basedir}/src/main/domainconfig</directory>
+                                </descriptor>
+                            </descriptors>
                         </configuration>
                     </execution>
                 </executions>
