@@ -6,6 +6,7 @@ import com.szmg.grafana.domain.Dashboard;
 import com.szmg.grafana.domain.Row;
 import com.szmg.grafana.domain.Something;
 import com.szmg.grafana.domain.panel.Text;
+import com.szmg.some.stuff.IAmGenerated;
 
 import java.io.IOException;
 
@@ -31,6 +32,8 @@ public class DashboardWriter {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
 //        System.out.println(mapper.writeValueAsString(d));
         System.out.println(mapper.writeValueAsString(s));
+
+        new IAmGenerated().callMe();
     }
 
 }
