@@ -4,3 +4,10 @@ fields:
    type: Integer
  - name: title
    type: String
+---
+name: Text
+fields:
+ - name: mode
+   type: String
+ - name: content
+   type: String

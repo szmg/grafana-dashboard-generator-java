@@ -1,7 +1,9 @@
 package com.szmg.jsonbuildergenerator;
 
 
+import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import net.sourceforge.jenesis4java.Access;
 import net.sourceforge.jenesis4java.ClassField;
@@ -81,8 +83,10 @@ public class JsonBuilderGenerator extends AbstractMojo {
     private void generateJavaCodeFor(File yamlPath) throws MojoExecutionException, MojoFailureException {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try {
-            DomainDescription domainDescription = mapper.readValue(yamlPath, DomainDescription.class);
-            generateJavaCodeFor(domainDescription);
+            MappingIterator<DomainDescription> iterator = mapper.readerFor(DomainDescription.class).readValues(yamlPath);
+            while (iterator.hasNextValue()) {
+                generateJavaCodeFor(iterator.next());
+            }
         } catch (IOException e) {
             getLog().error(String.format("Cannot parse descriptor [%s]", yamlPath), e);
             throw new MojoExecutionException(String.format("Cannot parse descriptor [%s]", yamlPath), e);
