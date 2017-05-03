@@ -3,6 +3,19 @@ abstract: true
 fields:
  - name: id
    type: Integer
+ - name: title
+   type: String
+ - name: description
+   type: String
+ - name: span
+   type: Integer
+ - name: height
+   type: String
+ - name: transparent
+   type: Boolean
+ - name: minSpan
+   type: Integer
+
 
 ---
 name: Text
