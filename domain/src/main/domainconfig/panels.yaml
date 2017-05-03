@@ -1,0 +1,14 @@
+name: Panel
+abstract: true
+fields:
+ - name: id
+   type: Integer
+
+---
+name: Text
+extends: Panel
+fields:
+ - name: mode
+   type: String
+ - name: content
+   type: String

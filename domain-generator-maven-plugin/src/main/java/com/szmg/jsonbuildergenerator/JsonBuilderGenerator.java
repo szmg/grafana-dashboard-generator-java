@@ -105,8 +105,16 @@ public class JsonBuilderGenerator extends AbstractMojo {
         }
 
         PackageClass c = unit.newPublicClass(domain.getName());
-        // TODO provide this with generation or make it configurable
-        c.setExtends("com.szmg.grafana.domain.BaseJsonObject");
+        if (domain.isAbstract()) {
+            c.isAbstract(true);
+        }
+
+        if (StringUtils.isNotBlank(domain.getExtendedClass())) {
+            c.setExtends(domain.getExtendedClass());
+        } else {
+            // TODO provide this with generation or make it configurable
+            c.setExtends("com.szmg.grafana.domain.BaseJsonObject");
+        }
 
         for (FieldDescription field : domain.getFields()) {
             addField(vm, c, field);
