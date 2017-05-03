@@ -145,10 +145,17 @@ public class JsonBuilderGenerator extends AbstractMojo {
         setter.setAccess(Access.PUBLIC);
         setter.addParameter(fieldType, name);
         setter.newStmt(vm.newInvoke("this", "addValue").addArg(fieldNameVar).addArg(vm.newVar(name)));
+        if (StringUtils.isNotBlank(field.getDescription())) {
+            setter.javadoc(field.getDescription());
+        }
 
         ClassMethod getter = c.newMethod(fieldType, "get" + capName);
         getter.setAccess(Access.PUBLIC);
         getter.newReturn().setExpression(vm.newInvoke("this", "getValue").addArg(fieldNameVar));
+        if (StringUtils.isNotBlank(field.getDescription())) {
+            getter.javadoc(field.getDescription());
+        }
+
     }
 
     private static String[] toArrayOrNull(List<String> list) {

@@ -23,5 +23,6 @@ extends: Panel
 fields:
  - name: mode
    type: String
+   description: "Render mode, valid values are 'html', 'markdown', 'text'"
  - name: content
    type: String
