@@ -31,3 +31,102 @@ fields:
     description: "Render mode, valid values are 'html', 'markdown', 'text'"
   - name: content
     type: String
+
+---
+name: SingleStat
+extends: Panel
+defaultValues:
+  type: '"singlestat"'
+fields:
+  - name: cacheTimeout
+    type: Integer
+  - name: colorBackground
+    type: Boolean
+  - name: colorValue
+    type: Boolean
+  - name: colors
+    type: Colors
+  - name: datasource
+    type: String
+  - name: format
+    type: String
+    description: "E.g., 'short', 'ms'"
+  - name: gauge
+    type: Gauge
+  - name: interval
+    type: String
+    description: "TODO"
+  - name: links
+    type: List<Object>
+    description: "TODO"
+  - name: mappingType
+    type: Integer
+  - name: mappingTypes
+    type: Object
+    description: "TODO"
+  - name: maxDataPoints
+    type: Integer
+  - name: nullPointMode
+    type: String
+    description: "Default value: 'connected'"
+  - name: nullText
+    type: String
+  - name: postfix
+    type: String
+  - name: postfixFontSize
+    type: String
+    description: "Default value: '50%'"
+  - name: prefix
+    type: String
+  - name: prefixFontSize
+    type: String
+    description: "Default value: '50%'"
+  - name: rangeMaps
+    type: String
+    description: "TODO"
+  - name: sparkline
+    type: Sparkline
+  - name: targets
+    type: Object
+    description: "TODO, top prio"
+  - name: thresholds
+    type: String
+  - name: valueFontSize
+    type: String
+    description: "Default value: '80%'"
+  - name: valueMaps
+    type: Object
+    description: "TODO"
+  - name: valueName
+    type: String
+    description: "Default value: 'avg'. Possible names: 'min', 'max', 'avg', 'current', 'total', 'name', 'first', 'delta', 'diff', 'range'."
+
+---
+name: Gauge
+defaultValues:
+  show: 'true' # If a gauge is not null, user wants it to show.
+fields:
+  - name: maxValue
+    type: Integer
+  - name: minValue
+    type: Integer
+  - name: show
+    type: Boolean
+  - name: thresholdLabels
+    type: Boolean
+  - name: thresholdMarkers
+    type: Boolean
+
+---
+name: Sparkline
+defaultValues:
+  show: 'true' # If a gauge is not null, user wants it to show.
+fields:
+  - name: fillColor
+    type: String
+  - name: full
+    type: Boolean
+  - name: show
+    type: Boolean
+  - name: lineColor
+    type: String
