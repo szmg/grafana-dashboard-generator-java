@@ -3,21 +3,17 @@ package com.szmg.jsonbuildergenerator;
 
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import net.sourceforge.jenesis4java.Access;
 import net.sourceforge.jenesis4java.ClassField;
 import net.sourceforge.jenesis4java.ClassMethod;
 import net.sourceforge.jenesis4java.CompilationUnit;
-import net.sourceforge.jenesis4java.Expression;
-import net.sourceforge.jenesis4java.FormalParameter;
+import net.sourceforge.jenesis4java.Constructor;
 import net.sourceforge.jenesis4java.PackageClass;
-import net.sourceforge.jenesis4java.StringLiteral;
 import net.sourceforge.jenesis4java.Type;
 import net.sourceforge.jenesis4java.Variable;
 import net.sourceforge.jenesis4java.VirtualMachine;
 import org.apache.maven.model.FileSet;
-import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -25,12 +21,15 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.CollectionUtils;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * In fact it doesn't build anything like Json. It's a bad name.
@@ -104,6 +103,10 @@ public class JsonBuilderGenerator extends AbstractMojo {
             unit.setNamespace(packageName);
         }
 
+        unit.addImport(List.class);
+        unit.addImport(Map.class);
+        unit.addImport(Set.class);
+
         PackageClass c = unit.newPublicClass(domain.getName());
         if (domain.isAbstract()) {
             c.isAbstract(true);
@@ -114,6 +117,16 @@ public class JsonBuilderGenerator extends AbstractMojo {
         } else {
             // TODO provide this with generation or make it configurable
             c.setExtends("com.szmg.grafana.domain.BaseJsonObject");
+        }
+
+        if (domain.getDefaultValues() != null && !domain.getDefaultValues().isEmpty()) {
+            Constructor constructor = c.newConstructor();
+            constructor.setAccess(Access.PUBLIC);
+            for (Map.Entry<String, String> entry : domain.getDefaultValues().entrySet()) {
+                constructor.newStmt(vm.newInvoke("this", "addValue")
+                        .addArg(entry.getKey())
+                        .addArg(vm.newFree(entry.getValue())));
+            }
         }
 
         for (FieldDescription field : domain.getFields()) {
@@ -142,7 +155,7 @@ public class JsonBuilderGenerator extends AbstractMojo {
         String capName = StringUtils.capitalise(name);
         Type fieldType = vm.newType(field.getType());
         ClassMethod setter = c.newMethod(vm.newType(Type.VOID), "set" + capName);
-        setter.setAccess(Access.PUBLIC);
+        setter.setAccess(field.isReadonly() ? Access.PROTECTED : Access.AccessType.PUBLIC);
         setter.addParameter(fieldType, name);
         setter.newStmt(vm.newInvoke("this", "addValue").addArg(fieldNameVar).addArg(vm.newVar(name)));
         if (StringUtils.isNotBlank(field.getDescription())) {

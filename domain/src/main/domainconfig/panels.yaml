@@ -1,28 +1,33 @@
 name: Panel
 abstract: true
 fields:
- - name: id
-   type: Integer
- - name: title
-   type: String
- - name: description
-   type: String
- - name: span
-   type: Integer
- - name: height
-   type: String
- - name: transparent
-   type: Boolean
- - name: minSpan
-   type: Integer
+  - name: id
+    type: Integer
+  - name: title
+    type: String
+  - name: description
+    type: String
+  - name: span
+    type: Integer
+  - name: height
+    type: String
+  - name: transparent
+    type: Boolean
+  - name: minSpan
+    type: Integer
+  - name: type
+    type: String
+    readonly: true
 
 
 ---
 name: Text
 extends: Panel
+defaultValues:
+  type: '"text"'
 fields:
- - name: mode
-   type: String
-   description: "Render mode, valid values are 'html', 'markdown', 'text'"
- - name: content
-   type: String
+  - name: mode
+    type: String
+    description: "Render mode, valid values are 'html', 'markdown', 'text'"
+  - name: content
+    type: String

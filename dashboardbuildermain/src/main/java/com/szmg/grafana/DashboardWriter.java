@@ -2,9 +2,7 @@ package com.szmg.grafana;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.szmg.grafana.domain.Something;
-import com.szmg.grafana.domain.gen.Dashboard;
-import com.szmg.grafana.domain.gen.Text;
+import com.szmg.grafana.domain.Text;
 
 import java.io.IOException;
 

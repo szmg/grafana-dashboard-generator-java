@@ -1,4 +1,4 @@
-package com.szmg.grafana.domain;
+package com.szmg.grafana.domain.panel;
 
 /**
  * Based on

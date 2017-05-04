@@ -30,7 +30,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <packageName>com.szmg.grafana.domain.gen</packageName>
+                            <packageName>com.szmg.grafana.domain</packageName>
                             <descriptors>
                                 <descriptor>
                                     <directory>${project.basedir}/src/main/domainconfig</directory>

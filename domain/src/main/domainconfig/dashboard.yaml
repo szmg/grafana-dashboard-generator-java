@@ -4,3 +4,34 @@ fields:
    type: Integer
  - name: title
    type: String
+ - name: style
+   type: String
+   description: "Style, e.g., 'dark'"
+ - name: timezone
+   type: String
+   description: "E.g., 'browser'"
+ - name: editable
+   type: Boolean
+ - name: hideControls
+   type: Boolean
+ - name: graphTooltip
+   type: Integer
+ - name: rows
+   type: List<Row>
+ - name: time
+   type: FromTo
+
+---
+name: Row
+fields:
+ - name: collapse
+   type: Boolean
+ - name: editable
+   type: Boolean
+ - name: height
+   type: String
+   description: "E.g., '200px'"
+ - name: panels
+   type: List<Panel>
+ - name: title
+   type: String

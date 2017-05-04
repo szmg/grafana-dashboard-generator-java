@@ -1,7 +1,5 @@
 package com.szmg.grafana.domain.panel;
 
-import com.szmg.grafana.domain.Panel;
-
 /**
  * https://github.com/grafana/grafana/blob/master/public/app/plugins/panel/text/module.ts
  */
