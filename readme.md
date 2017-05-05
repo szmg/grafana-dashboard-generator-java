@@ -1,5 +1,9 @@
 # Grafana dashboard builder in Java
 
+```
+This Work in progress
+```
+
 Code your Grafana dashboards in Java, more or less type-safe, with auto-complete.
 
 E.g.,

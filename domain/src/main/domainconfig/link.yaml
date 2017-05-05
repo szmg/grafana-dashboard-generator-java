@@ -1,0 +1,35 @@
+name: Link
+abstract: true
+fields:
+  - name: type
+    type: String
+    readonly: true
+  - name: title
+    type: String
+  - name: includeVars
+    type: Boolean
+  - name: keepTime
+    type: Boolean
+  - name: targetBlank
+    type: Boolean
+  - name: params
+    type: String
+
+---
+name: DashboardLink
+extends: Link
+defaultValues:
+  type: '"dashboard"'
+fields:
+  - name: dashboard
+    type: String
+
+---
+name: AbsoluteLink
+extends: Link
+defaultValues:
+  type: '"absolute"'
+fields:
+  - name: url
+    type: String
+

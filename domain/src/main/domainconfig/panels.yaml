@@ -55,15 +55,15 @@ fields:
     type: Gauge
   - name: interval
     type: String
-    description: "TODO"
+    description: "TODO what is this?"
   - name: links
-    type: List<Object>
-    description: "TODO"
+    type: List<Link>
   - name: mappingType
     type: Integer
+    description: "1 --> value to text; 2 --> range to text"
   - name: mappingTypes
     type: Object
-    description: "TODO"
+    description: "TODO 'value to text' = 1; 'range to text' = 2"
   - name: maxDataPoints
     type: Integer
   - name: nullPointMode
@@ -82,21 +82,20 @@ fields:
     type: String
     description: "Default value: '50%'"
   - name: rangeMaps
-    type: String
-    description: "TODO"
+    type: List<RangeMapping>
+    description: "mappingType should be 2"
   - name: sparkline
     type: Sparkline
   - name: targets
-    type: Object
-    description: "TODO, top prio"
+    type: List<Target>
   - name: thresholds
     type: String
   - name: valueFontSize
     type: String
     description: "Default value: '80%'"
   - name: valueMaps
-    type: Object
-    description: "TODO"
+    type: List<ValueMapping>
+    description: "mappingType should be 1"
   - name: valueName
     type: String
     description: "Default value: 'avg'. Possible names: 'min', 'max', 'avg', 'current', 'total', 'name', 'first', 'delta', 'diff', 'range'."
@@ -129,4 +128,33 @@ fields:
   - name: show
     type: Boolean
   - name: lineColor
+    type: String
+
+---
+name: Target #TODO move to normal object and create a very nice builder (with functions maybe)
+fields:
+  - name: refId
+    type: String
+  - name: target
+    type: String
+
+---
+name: RangeMapping
+fields:
+  - name: from
+    type: String
+  - name: to
+    type: String
+  - name: text
+    type: String
+
+---
+name: ValueMapping
+fields:
+  - name: value
+    type: String
+  - name: op
+    type: String
+    description: 'E.g., "="'
+  - name: text
     type: String
