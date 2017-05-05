@@ -1,0 +1,163 @@
+name: Graph
+extends: Panel
+defaultValues:
+  type: '"graph"'
+fields:
+  - name: aliasColors
+    type: Object
+    description: "TODO"
+  - name: bars
+    type: Boolean
+  - name: datasource
+    type: String
+  - name: fill
+    type: Integer
+  - name: legend
+    type: Legend
+  - name: lines
+    type: Boolean
+  - name: linewidth
+    type: Integer
+  - name: links
+    type: List<Link>
+  - name: nullPointMode
+    type: String
+    description: "Possible values: 'null', 'null as zero', 'connected'"
+  - name: percentage
+    type: Boolean
+  - name: pointradius
+    type: Integer
+  - name: points
+    type: Boolean
+  - name: renderer
+    type: String
+    description: "TODO what is this? it's flot by default"
+  - name: seriesOverrides
+    type: List<SeriesOverride>
+  - name: stack
+    type: Boolean
+  - name: steppedLine
+    type: Boolean
+    description: "It's called 'Staircase' on UI (belongs to lines draw mode)"
+  - name: targets
+    type: List<Target>
+  - name: thresholds
+    type: List<Threshold>
+  - name: timeFrom
+    type: String
+    description: "Override relative time, e.g., 1h"
+  - name: timeShift
+    type: String
+    description: "Add time shift, e.g., 1h"
+  - name: tooltip
+    type: Tooltip
+  - name: xaxis
+    type: XAxis
+  - name: yaxes
+    type: List<YAxis>
+    description: "Length should be 2: left, right. TODO"
+
+---
+name: Legend
+fields:
+  - name: alignAsTable
+    type: Boolean
+  - name: avg
+    type: Boolean
+  - name: current
+    type: Boolean
+  - name: hideEmpty
+    type: Boolean
+  - name: hideZero
+    type: Boolean
+  - name: max
+    type: Boolean
+  - name: min
+    type: Boolean
+  - name: rightSide
+    type: Boolean
+  - name: show
+    type: Boolean
+  - name: total
+    type: Boolean
+  - name: values
+    type: Boolean
+
+---
+name: Tooltip
+fields:
+  - name: shared
+    type: Boolean
+    description: "True if all series is in one tooltip."
+  - name: sort
+    type: Integer
+    description: "Sort order; 0=None, 1=Increasing, 2=Decreasing"
+  - name: value_type
+    type: String
+    description: "Stacked value; 'individual' or 'cumulative'"
+
+---
+name: XAxis
+fields:
+  - name: mode
+    type: String
+    description: "time or series"
+  - name: name
+    type: String
+  - name: show
+    type: Boolean
+  - name: values
+    type: List<String>
+    description: "Use when mode is 'series'. Add one of 'avg', 'max', 'min', 'total', 'count', 'current'."
+
+---
+name: YAxis
+fields:
+  - name: format
+    type: String
+    description: "Format, e.g., 'short', 'ms'"
+  - name: label
+    type: String
+    description: "Label on axis"
+  - name: logBase
+    type: Integer
+    description: "1: linear, 2: log2, 10: log10, ..."
+  - name: max
+    type: String
+    description: "Forced max value"
+  - name: min
+    type: String
+    description: "Forced min value"
+  - name: show
+    type: Boolean
+
+---
+name: Threshold
+fields:
+  - name: colorMode
+    type: String
+    description: "'critical', 'warning', 'ok' or 'custom'"
+  - name: op
+    type: String
+    description: "'gt' or 'lt'"
+  - name: value
+    type: Integer
+  - name: fill
+    type: Boolean
+    description:
+  - name: fillColor
+    type: String
+    description: "Only is colorMode is custom, e.g., rgb(222, 21, 21)"
+  - name: line
+    type: Boolean
+    description:
+  - name: lineColor
+    type: String
+    description: "Only is colorMode is custom, e.g., rgb(222, 21, 21)"
+
+---
+name: SeriesOverride
+fields:
+  - name: alias
+    type: String
+    description: "Alias or regex. Add fields to override with the addField method."

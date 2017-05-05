@@ -3,6 +3,7 @@ package com.szmg.grafana;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.szmg.grafana.domain.Dashboard;
+import com.szmg.grafana.domain.Graph;
 import com.szmg.grafana.domain.Row;
 import com.szmg.grafana.domain.SingleStat;
 import com.szmg.grafana.domain.Target;
@@ -27,27 +28,39 @@ public class DashboardWriter {
         dashboard.setTitle("Test dashboard");
         dashboard.setRows(new ArrayList<>());
 
-        Row row = new Row();
-        row.setHeight("200px");
-        row.setPanels(new ArrayList<>());
-        dashboard.getRows().add(row);
+        Row row1 = newRow(dashboard);
+        Row row2 = newRow(dashboard);
 
         Text text = new Text();
         text.setContent("# This is the test");
-        text.setSpan(4);
-        row.getPanels().add(text);
+        text.setSpan(8);
+        row1.getPanels().add(text);
 
         SingleStat singleStat = new SingleStat();
         singleStat.setTitle("Test single stat");
         singleStat.setTargets(new ArrayList<>());
         singleStat.setSpan(4);
-        row.getPanels().add(singleStat);
+        row1.getPanels().add(singleStat);
+
+        Graph graph = new Graph();
+        graph.setSpan(12);
+        graph.setTargets(new ArrayList<>());
+        row2.getPanels().add(graph);
 
         Target target = new Target();
         target.setTarget("maxSeries(humidity.peti.test.sensors)");
         singleStat.getTargets().add(target);
+        graph.getTargets().add(target);
 
         return dashboard;
+    }
+
+    private static Row newRow(Dashboard dashboard) {
+        Row row = new Row();
+        row.setHeight("200px");
+        row.setPanels(new ArrayList<>());
+        dashboard.getRows().add(row);
+        return row;
     }
 
 }
