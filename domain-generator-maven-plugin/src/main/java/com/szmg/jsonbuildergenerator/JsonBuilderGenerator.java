@@ -4,15 +4,6 @@ package com.szmg.jsonbuildergenerator;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import net.sourceforge.jenesis4java.Access;
-import net.sourceforge.jenesis4java.ClassField;
-import net.sourceforge.jenesis4java.ClassMethod;
-import net.sourceforge.jenesis4java.CompilationUnit;
-import net.sourceforge.jenesis4java.Constructor;
-import net.sourceforge.jenesis4java.PackageClass;
-import net.sourceforge.jenesis4java.Type;
-import net.sourceforge.jenesis4java.Variable;
-import net.sourceforge.jenesis4java.VirtualMachine;
 import org.apache.maven.model.FileSet;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -21,15 +12,13 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.util.CollectionUtils;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * In fact it doesn't build anything like Json. It's a bad name.
@@ -48,6 +37,8 @@ public class JsonBuilderGenerator extends AbstractMojo {
 
     @Parameter
     protected String packageName;
+
+    private CodeGenerator codeGenerator = new CodeGenerator();
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -95,80 +86,27 @@ public class JsonBuilderGenerator extends AbstractMojo {
     private void generateJavaCodeFor(DomainDescription domain) throws MojoFailureException {
         getLog().info(String.format("Generating %s", domain.getName()));
 
-        //System.setProperty("jenesis.encoder", JenesisJalopyEncoder.class.getName());
-        VirtualMachine vm = VirtualMachine.getVirtualMachine();
-        CompilationUnit unit = vm.newCompilationUnit(this.outputJavaDirectory.getAbsolutePath());
+        String code = codeGenerator.generateJavaCodeFor(domain, packageName);
+        File javaFile = createDirsAndGetSourceFile(domain);
+        writeToFile(javaFile, code);
+    }
 
-        if (StringUtils.isNotBlank(packageName)) {
-            unit.setNamespace(packageName);
-        }
-
-        unit.addImport(List.class);
-        unit.addImport(Map.class);
-        unit.addImport(Set.class);
-
-        PackageClass c = unit.newPublicClass(domain.getName());
-        if (domain.isAbstract()) {
-            c.isAbstract(true);
-        }
-
-        if (StringUtils.isNotBlank(domain.getExtendedClass())) {
-            c.setExtends(domain.getExtendedClass());
-        } else {
-            // TODO provide this with generation or make it configurable
-            c.setExtends("com.szmg.grafana.domain.BaseJsonObject");
-        }
-
-        if (domain.getDefaultValues() != null && !domain.getDefaultValues().isEmpty()) {
-            Constructor constructor = c.newConstructor();
-            constructor.setAccess(Access.PUBLIC);
-            for (Map.Entry<String, String> entry : domain.getDefaultValues().entrySet()) {
-                constructor.newStmt(vm.newInvoke("this", "addValue")
-                        .addArg(entry.getKey())
-                        .addArg(vm.newFree(entry.getValue())));
-            }
-        }
-
-        for (FieldDescription field : domain.getFields()) {
-            addField(vm, c, field);
-        }
-
-        try {
-            unit.encode();
+    private void writeToFile(File file, String content) throws MojoFailureException {
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write(content);
         } catch (IOException e) {
-            getLog().error(String.format("Error during generating [%s]", domain.getName()), e);
-            throw new MojoFailureException(String.format("Error during generating [%s]", domain.getName()), e);
+            throw new MojoFailureException("Could not write source file", e);
         }
     }
 
-    private void addField(VirtualMachine vm, PackageClass c, FieldDescription field) {
-        String name = field.getName();
-        String fieldName = "FIELD_" + ccToUnderscoreUppercase(name);
-        Variable fieldNameVar = vm.newVar(fieldName);
-
-        ClassField staticField = c.newField(String.class, fieldName);
-        staticField.setAccess(Access.PROTECTED);
-        staticField.isStatic(true);
-        staticField.isFinal(true);
-        staticField.setExpression(vm.newString(name));
-
-        String capName = StringUtils.capitalise(name);
-        Type fieldType = vm.newType(field.getType());
-        ClassMethod setter = c.newMethod(vm.newType(Type.VOID), "set" + capName);
-        setter.setAccess(field.isReadonly() ? Access.PROTECTED : Access.AccessType.PUBLIC);
-        setter.addParameter(fieldType, name);
-        setter.newStmt(vm.newInvoke("this", "addValue").addArg(fieldNameVar).addArg(vm.newVar(name)));
-        if (StringUtils.isNotBlank(field.getDescription())) {
-            setter.javadoc(field.getDescription());
+    private File createDirsAndGetSourceFile(DomainDescription domain) {
+        File dir = new File(outputJavaDirectory.getAbsolutePath());
+        if (StringUtils.isNotBlank(packageName)) {
+            dir = new File(dir, packageName.replaceAll("\\.", File.separator));
         }
+        dir.mkdirs();
 
-        ClassMethod getter = c.newMethod(fieldType, "get" + capName);
-        getter.setAccess(Access.PUBLIC);
-        getter.newReturn().setExpression(vm.newInvoke("this", "getValue").addArg(fieldNameVar));
-        if (StringUtils.isNotBlank(field.getDescription())) {
-            getter.javadoc(field.getDescription());
-        }
-
+        return new File(dir, domain.getName() + ".java");
     }
 
     private static String[] toArrayOrNull(List<String> list) {
@@ -178,9 +116,4 @@ public class JsonBuilderGenerator extends AbstractMojo {
         }
         return result;
     }
-
-    private static String ccToUnderscoreUppercase(String cc) {
-        return cc.replaceAll("[A-Z]", "_$0").toUpperCase();
-    }
-
 }

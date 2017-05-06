@@ -31,9 +31,7 @@ public class DashboardWriter {
         Row row1 = newRow(dashboard);
         Row row2 = newRow(dashboard);
 
-        Text text = new Text();
-        text.setContent("# This is the test");
-        text.setSpan(8);
+        Text text = new Text().withContent("# This is the test").withSpan(8);
         row1.getPanels().add(text);
 
         SingleStat singleStat = new SingleStat();
