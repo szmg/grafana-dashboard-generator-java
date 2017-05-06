@@ -18,10 +18,13 @@ import org.codehaus.plexus.util.StringUtils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * In fact it doesn't build anything like Json. It's a bad name.
+ *
+ * Not thread-safe.
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class JsonBuilderGenerator extends AbstractMojo {
@@ -40,6 +43,8 @@ public class JsonBuilderGenerator extends AbstractMojo {
 
     private CodeGenerator codeGenerator = new CodeGenerator();
 
+    private List<DomainDescription> generatedDomains = new ArrayList<>();
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (this.project != null) {
@@ -49,14 +54,21 @@ public class JsonBuilderGenerator extends AbstractMojo {
             getLog().error("Could not create source directory! (it might already exist)");
         } else {
             try {
-                generateJavaCode();
+                generateDomains();
+                generateFactories();
             } catch (IOException e) {
                 throw new MojoExecutionException("Could not generate Java source code!", e);
             }
         }
     }
 
-    private void generateJavaCode() throws IOException, MojoExecutionException, MojoFailureException {
+    private void generateFactories() throws MojoFailureException {
+        String code = codeGenerator.generateFactories(generatedDomains, packageName);
+        File f = createPackageDirsAndGetJavaFile("DomainFactories");
+        writeToFile(f, code);
+    }
+
+    private void generateDomains() throws IOException, MojoExecutionException, MojoFailureException {
 
         for (FileSet descriptor : descriptors) {
             DirectoryScanner scanner = new DirectoryScanner();
@@ -85,9 +97,10 @@ public class JsonBuilderGenerator extends AbstractMojo {
 
     private void generateJavaCodeFor(DomainDescription domain) throws MojoFailureException {
         getLog().info(String.format("Generating %s", domain.getName()));
+        generatedDomains.add(domain); // :(
 
         String code = codeGenerator.generateJavaCodeFor(domain, packageName);
-        File javaFile = createDirsAndGetSourceFile(domain);
+        File javaFile = createPackageDirsAndGetJavaFile(domain.getName());
         writeToFile(javaFile, code);
     }
 
@@ -99,14 +112,14 @@ public class JsonBuilderGenerator extends AbstractMojo {
         }
     }
 
-    private File createDirsAndGetSourceFile(DomainDescription domain) {
+    private File createPackageDirsAndGetJavaFile(String name) {
         File dir = new File(outputJavaDirectory.getAbsolutePath());
         if (StringUtils.isNotBlank(packageName)) {
             dir = new File(dir, packageName.replaceAll("\\.", File.separator));
         }
         dir.mkdirs();
 
-        return new File(dir, domain.getName() + ".java");
+        return new File(dir, name + ".java");
     }
 
     private static String[] toArrayOrNull(List<String> list) {

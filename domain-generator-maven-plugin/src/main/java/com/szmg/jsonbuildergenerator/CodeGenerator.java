@@ -11,11 +11,13 @@ import org.apache.maven.plugin.MojoFailureException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CodeGenerator {
 
     private static final String CLASS_TEMPLATE = "class.ftlh";
+    private static final String FACTORIES_TEMPLATE = "factories.ftlh";
     private static final String TEMPLATE_PATH = "templates";
 
     private final Configuration templateCfg;
@@ -36,7 +38,17 @@ public class CodeGenerator {
         model.put("domain", domain);
         model.put("packageName", packageName);
 
-        Template temp = getTemplate();
+        Template temp = getTemplate(CLASS_TEMPLATE);
+        String code = generateCode(model, temp);
+        return formatCode(code);
+    }
+
+    public String generateFactories(List<DomainDescription> domains, String packageName) throws MojoFailureException {
+        Map<String, Object> model = new HashMap<>();
+        model.put("domains", domains);
+        model.put("packageName", packageName);
+
+        Template temp = getTemplate(FACTORIES_TEMPLATE);
         String code = generateCode(model, temp);
         return formatCode(code);
     }
@@ -61,12 +73,11 @@ public class CodeGenerator {
         return stringWriter.toString();
     }
 
-    private Template getTemplate() throws MojoFailureException {
+    private Template getTemplate(String name) throws MojoFailureException {
         try {
-            return templateCfg.getTemplate(CLASS_TEMPLATE);
+            return templateCfg.getTemplate(name);
         } catch (IOException e) {
-            throw new MojoFailureException("Could not load class template", e);
+            throw new MojoFailureException("Could not load template", e);
         }
     }
-
 }
