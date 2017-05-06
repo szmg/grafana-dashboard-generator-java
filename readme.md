@@ -42,7 +42,30 @@ Dashboard dashboard = newDashboard()
 
 ```
 
-#### Higer level bits and bobs
+#### Flexible domain object
+
+If a field is missing for any reason (e.g., it was introduced in a newer Grafana version than I used)
+or its type has changed meanwhile, you can
+quickly add/override it without changing the library code. (Although a PR is welcomed.)
+
+So no one have to clone/modify/compile/raise PR/wait for trying out an unusual/new/forgotten field.
+
+Every domain object has a generic setter, getter and "with" method:
+
+```java
+
+// setter
+dashboard.setField("templateInstance", "my favorite");
+assert dashboard.getField("templateInstance") == "my favorite";
+
+// "with" method
+Dashboard sameDashboard = dashboard.withField("templateInstance", "my other favorite");
+assert dashboard.getField("templateInstance") == "my other favorite"; // it's not immutable
+assert sameDashboard.getField("templateInstance") == "my other favorite";
+
+```
+
+#### Higher level bits and bobs
 
 TODO: implement :)
 
@@ -60,7 +83,7 @@ System.out.println(serializer.toString(dashboard));
 serializer.write(testDashboard(), System.out);
 ```
 
-#### Upload it to Grafana
+#### Upload to Grafana
 
 It's easy to update your dashboards from code.
 
