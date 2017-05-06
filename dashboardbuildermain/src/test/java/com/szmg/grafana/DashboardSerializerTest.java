@@ -1,13 +1,11 @@
 package com.szmg.grafana;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.szmg.grafana.domain.Dashboard;
 import com.szmg.grafana.domain.Graph;
 import com.szmg.grafana.domain.Row;
 import com.szmg.grafana.domain.Target;
-
-import java.io.IOException;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import static com.szmg.grafana.domain.DomainFactories.newDashboard;
 import static com.szmg.grafana.domain.DomainFactories.newRow;
@@ -15,22 +13,38 @@ import static com.szmg.grafana.domain.DomainFactories.newSingleStat;
 import static com.szmg.grafana.domain.DomainFactories.newTarget;
 import static com.szmg.grafana.domain.DomainFactories.newText;
 
-public class DashboardWriter {
+public class DashboardSerializerTest {
 
-    public static void main(String args[]) throws IOException {
-        System.out.println("Hello! :)");
+    private DashboardSerializer serializer = new DashboardSerializer();
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
-
-        System.out.println(mapper.writeValueAsString(testDashboard()));
+    /**
+     * Of course it's not really a test... yet.
+     */
+    @Test
+    @Ignore
+    public void printTestDashboard() {
+        System.out.println(serializer.toString(testDashboard()));
     }
 
-    private static Dashboard testDashboard() {
+    @Test
+    @Ignore
+    public void upload() {
+        GrafanaEndpoint endpoint = new GrafanaEndpoint();
+        endpoint.setBaseUrl(System.getProperty("grafana.url"));
+        endpoint.setApiKey(System.getProperty("grafana.apiKey"));
+        endpoint.setSkipSSLValidation(true);
+        DashboardUploader uploader = new DashboardUploader(endpoint);
+        uploader.upload(DashboardSerializerTest.testDashboard(), true);
+
+    }
+
+    public static Dashboard testDashboard() {
         Target target = newTarget().withTarget("maxSeries(humidity.peti.test.sensors)");
 
         Row row1 = newTallRow()
-                .addPanel(newText().withContent("# This is the test").withSpan(8))
+                .addPanel(newText()
+                        .withContent("<div class=\"text-center dashboard-header\"><span>This is the test</span></div>")
+                        .withMode("html").withTransparent(true).withSpan(8))
                 .addPanel(newSingleStat().withTitle("Single stat test").addTarget(target).withSpan(4));
 
         Row row2 = newTallRow()
