@@ -55,6 +55,22 @@ public ${className}() {
     public ${withReturnType} with${fieldNameCap}(${field.type} ${field.name}) {
         return withValue(${fieldNameConst}, ${field.name});
     }
+
+    <#if field.type?starts_with("List<")>
+        <#assign innerType = field.type?keep_after("<")?keep_before_last(">")>
+        <#assign singularName = fieldNameCap?remove_ending("s")>
+        <#assign paramName = singularName?uncap_first>
+
+        ${javadoc}
+        public ${withReturnType} add${singularName}(${innerType} ${paramName}) {
+            ${field.type} list = get${fieldNameCap}();
+            if (list == null) {
+                list = new java.util.ArrayList<>();
+            }
+            list.add(${paramName});
+            return with${fieldNameCap}(list);
+        }
+    </#if>
 </#list>
 
 
