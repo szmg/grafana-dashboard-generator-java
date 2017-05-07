@@ -92,6 +92,10 @@ public ${className}() {
     </#if>
 </#list>
 
+<#if domain.abstract>
+    /** Generic implementation of ${className}. It's easier to to use sometimes. */
+    public static class Generic extends ${className}<Generic> { }
+</#if>
 
 }
 

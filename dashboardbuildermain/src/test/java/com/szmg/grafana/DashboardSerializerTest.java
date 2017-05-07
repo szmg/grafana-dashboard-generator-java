@@ -21,7 +21,6 @@ package com.szmg.grafana;
  */
 
 import com.szmg.grafana.domain.Dashboard;
-import com.szmg.grafana.domain.Graph;
 import com.szmg.grafana.domain.Row;
 import com.szmg.grafana.domain.Target;
 import org.junit.Ignore;

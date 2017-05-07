@@ -4,9 +4,28 @@
 This is Work in progress
 ```
 
-Code your Grafana dashboards in Java, more or less type-safe, with auto-complete.
+Code your Grafana dashboards in Java, more or less type-safe, with auto-complete. Then upload them to Grafana. As part of your build process if you fancy.
 
-E.g.,
+## Features
+
+* create dashboards in Java
+* create and _reuse_ your own frequently used components
+* upload your dashboards to Grafana
+* ApiKey or session cookie authentication
+* [PLAN] upload as part of your build process (Maven plugin)
+* [PLAN] upload with a nice command line tool
+* do not get stuck if the lib is missing a property or a type: add it without needing to recompile the lib (see [below](#flexible-domain-objects))
+
+
+## Usage
+
+### Maven
+
+TODO Maven
+
+### Basics
+
+I suggest you play with this and learn it that way. It's really straightforward if you are familiar with Grafana. `com.szmg.grafana.domain.DomainFactories` is a good place to start.
 
 ```java
 //import static com.szmg.grafana.domain.DomainFactories.*
@@ -42,34 +61,11 @@ Dashboard dashboard = newDashboard()
 
 ```
 
-#### Flexible domain object
-
-If a field is missing for any reason (e.g., it was introduced in a newer Grafana version than I used)
-or its type has changed meanwhile, you can
-quickly add/override it without changing the library code. (Although a PR is welcomed.)
-
-So no one have to clone/modify/compile/raise PR/wait for trying out an unusual/new/forgotten field.
-
-Every domain object has a generic setter, getter and "with" method:
-
-```java
-
-// setter
-dashboard.setField("templateInstance", "my favorite");
-assert dashboard.getField("templateInstance") == "my favorite";
-
-// "with" method
-Dashboard sameDashboard = dashboard.withField("templateInstance", "my other favorite");
-assert dashboard.getField("templateInstance") == "my other favorite"; // it's not immutable
-assert sameDashboard.getField("templateInstance") == "my other favorite";
-
-```
-
-#### Higher level bits and bobs
+### Higher level bits and bobs
 
 TODO: implement :)
 
-#### To String/Stream
+### Write to stream (optional)
 
 Convert to string or write onto a stream:
 
@@ -83,11 +79,9 @@ System.out.println(serializer.toString(dashboard));
 serializer.write(testDashboard(), System.out);
 ```
 
-#### Upload to Grafana
+### Upload to Grafana
 
 It's easy to update your dashboards from code.
-
-TODO: create maven plugin for upload
 
 ```java
 
@@ -117,9 +111,38 @@ uploader.upload(dashboard, true);
 
 ```
 
+## Flexible domain objects
 
-#### License
+If a field that you want to use is missing or its type has changed (e.g., a new type of panel), you can
+quickly add/override it without changing the library code itself. (Although a PR is welcomed.)
 
-ASL 2
+So no one have to clone/modify/compile/raise PR/wait for trying out an unusual/new/forgotten field/type.
+
+Every domain object has a generic setter, getter and "with" method:
+
+```java
+
+// setter
+dashboard.setField("templateInstance", "my favorite");
+assert dashboard.getField("templateInstance") == "my favorite";
+
+// "with" method
+Dashboard sameDashboard = dashboard.withField("templateInstance", "my other favorite");
+assert dashboard.getField("templateInstance") == "my other favorite"; // it's not immutable
+assert sameDashboard.getField("templateInstance") == "my other favorite";
+
+// use a new type of panel
+row1.addPanel(new Panel.Generic()
+        .withValue("type", "new type")
+        .withValue("newField", "value"));
+```
+
+Technical stuff: every domain object is a `Map<String, Object>` wrapped into their class; every typed property reads and writes that map. By using the generic setters/getter, you can write that map, too.
+
+You might want to look at the source of e.g., `Graph` to see how it works. And look for the file `graph.yaml` to see what it is generated from.
+
+## License
+
+Apache License Version 2.0
 
 Copyright (c) 2017 Mate Gabor Szvoboda
