@@ -52,6 +52,44 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>1.12</version>
+                <configuration>
+                    <licenseName>apache_v2</licenseName>
+                    <inceptionYear>2017</inceptionYear>
+                    <organizationName>SZMG Technologies Ltd</organizationName>
+                    <copyrightOwners>Mate Gabor Szvoboda</copyrightOwners>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>gen_license_txt</id>
+                        <goals>
+                            <goal>update-project-license</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+                    <execution>
+                        <id>gen_license_header</id>
+                        <goals>
+                            <goal>update-file-header</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                    </execution>
+                    <execution>
+                        <id>check_license_header</id>
+                        <goals>
+                            <goal>check-file-header</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <failOnMissingHeader>true</failOnMissingHeader>
+                            <failOnNotUptodateHeader>true</failOnNotUptodateHeader>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

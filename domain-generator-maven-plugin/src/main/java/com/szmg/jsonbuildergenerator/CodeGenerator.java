@@ -1,5 +1,25 @@
 package com.szmg.jsonbuildergenerator;
 
+/*-
+ * #%L
+ * domain-generator-maven-plugin
+ * %%
+ * Copyright (C) 2017 Mate Gabor Szvoboda
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import com.google.googlejavaformat.java.Formatter;
 import com.google.googlejavaformat.java.FormatterException;
 import freemarker.template.Configuration;
@@ -16,8 +36,8 @@ import java.util.Map;
 
 public class CodeGenerator {
 
-    private static final String CLASS_TEMPLATE = "class.ftlh";
-    private static final String FACTORIES_TEMPLATE = "factories.ftlh";
+    private static final String CLASS_TEMPLATE = "class.ftl";
+    private static final String FACTORIES_TEMPLATE = "factories.ftl";
     private static final String TEMPLATE_PATH = "templates";
 
     private final Configuration templateCfg;

@@ -120,6 +120,6 @@ uploader.upload(dashboard, true);
 
 #### License
 
-MIT
+ASL 2
 
 Copyright (c) 2017 Mate Gabor Szvoboda
