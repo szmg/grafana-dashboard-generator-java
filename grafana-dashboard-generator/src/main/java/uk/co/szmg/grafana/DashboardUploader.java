@@ -1,4 +1,4 @@
-package com.szmg.grafana;
+package uk.co.szmg.grafana;
 
 /*-
  * #%L
@@ -20,9 +20,7 @@ package com.szmg.grafana;
  * #L%
  */
 
-import com.szmg.grafana.domain.Dashboard;
-
-import java.io.IOException;
+import uk.co.szmg.grafana.domain.Dashboard;
 
 public class DashboardUploader {
 

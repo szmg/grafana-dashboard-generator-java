@@ -1,4 +1,4 @@
-package com.szmg.grafana;
+package uk.co.szmg.grafana;
 
 /*-
  * #%L
@@ -23,7 +23,7 @@ package com.szmg.grafana;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.szmg.grafana.domain.Dashboard;
+import uk.co.szmg.grafana.domain.Dashboard;
 
 import java.io.IOException;
 import java.io.OutputStream;

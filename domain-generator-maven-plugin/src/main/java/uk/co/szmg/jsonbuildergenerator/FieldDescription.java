@@ -1,4 +1,4 @@
-package com.szmg.jsonbuildergenerator;
+package uk.co.szmg.jsonbuildergenerator;
 
 /*-
  * #%L

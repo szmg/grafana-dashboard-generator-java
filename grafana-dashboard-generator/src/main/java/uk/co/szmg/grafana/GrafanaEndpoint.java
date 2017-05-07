@@ -1,4 +1,4 @@
-package com.szmg.grafana;
+package uk.co.szmg.grafana;
 
 /*-
  * #%L

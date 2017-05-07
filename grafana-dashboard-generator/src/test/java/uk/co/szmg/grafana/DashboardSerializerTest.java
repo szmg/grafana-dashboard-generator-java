@@ -1,4 +1,4 @@
-package com.szmg.grafana;
+package uk.co.szmg.grafana;
 
 /*-
  * #%L
@@ -20,20 +20,20 @@ package com.szmg.grafana;
  * #L%
  */
 
-import com.szmg.grafana.domain.Dashboard;
-import com.szmg.grafana.domain.Row;
-import com.szmg.grafana.domain.Target;
+import uk.co.szmg.grafana.domain.Dashboard;
+import uk.co.szmg.grafana.domain.Row;
+import uk.co.szmg.grafana.domain.Target;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static com.szmg.grafana.domain.DomainFactories.newDashboard;
-import static com.szmg.grafana.domain.DomainFactories.newGraph;
-import static com.szmg.grafana.domain.DomainFactories.newRow;
-import static com.szmg.grafana.domain.DomainFactories.newSingleStat;
-import static com.szmg.grafana.domain.DomainFactories.newTarget;
-import static com.szmg.grafana.domain.DomainFactories.newText;
+import static uk.co.szmg.grafana.domain.DomainFactories.newDashboard;
+import static uk.co.szmg.grafana.domain.DomainFactories.newGraph;
+import static uk.co.szmg.grafana.domain.DomainFactories.newRow;
+import static uk.co.szmg.grafana.domain.DomainFactories.newSingleStat;
+import static uk.co.szmg.grafana.domain.DomainFactories.newTarget;
+import static uk.co.szmg.grafana.domain.DomainFactories.newText;
 
 public class DashboardSerializerTest {
 

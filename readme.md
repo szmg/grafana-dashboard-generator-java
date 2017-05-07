@@ -25,10 +25,10 @@ TODO Maven
 
 ### Basics
 
-I suggest you play with this and learn it that way. It's really straightforward if you are familiar with Grafana. `com.szmg.grafana.domain.DomainFactories` is a good place to start.
+I suggest you play with this and learn it that way. It's really straightforward if you are familiar with Grafana. `uk.co.szmg.grafana.domain.DomainFactories` is a good place to start.
 
 ```java
-//import static com.szmg.grafana.domain.DomainFactories.*
+//import static uk.co.szmg.grafana.domain.DomainFactories.*
 
 Target target = newTarget()
         .withTarget("maxSeries(humidity.peti.test.sensors)");
