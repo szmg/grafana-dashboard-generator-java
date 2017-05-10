@@ -29,15 +29,30 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
 
+/**
+ * Turns {@link Dashboard}s into their JSON representation.
+ *
+ * It does no validation.
+ */
 public class DashboardSerializer {
 
     private final ObjectMapper mapper;
 
+    /**
+     * Default constructor, which initialises Jackson ObjectMapper with pretty print option.
+     */
     public DashboardSerializer() {
         mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
 
+    /**
+     * Gets the String representation of the given dashboard.
+     * The output is pretty printed.
+     * @param dashboard dashboard to turn into String
+     * @return String (JSON) representation of dashboard
+     * @throws IllegalArgumentException when the dashboard cannot be serialised
+     */
     public String toString(Dashboard dashboard) {
         try {
             return mapper.writeValueAsString(dashboard);
@@ -47,6 +62,13 @@ public class DashboardSerializer {
         }
     }
 
+    /**
+     * Writes the pretty printed JSON representation of a dashboard with the given {@link Writer}.
+     * @param dashboard dashboard to be serialised
+     * @param writer writer to be written with
+     * @throws IOException when "writer" throws IOException
+     * @throws IllegalArgumentException when the dashboard cannot be serialised
+     */
     public void write(Dashboard dashboard, Writer writer) throws IOException {
         try {
             mapper.writeValue(writer, dashboard);
@@ -56,6 +78,13 @@ public class DashboardSerializer {
         }
     }
 
+    /**
+     * Writes the pretty printed JSON representation of a dashboard on the given stream.
+     * @param dashboard dashboard to be serialised
+     * @param stream stream to be written on
+     * @throws IOException when "stream" throws IOException
+     * @throws IllegalArgumentException when the dashboard cannot be serialised
+     */
     public void write(Dashboard dashboard, OutputStream stream) throws IOException {
         try {
             mapper.writeValue(stream, dashboard);

@@ -22,11 +22,23 @@ package uk.co.szmg.grafana;
 
 import uk.co.szmg.grafana.domain.Dashboard;
 
+/**
+ * Serialises and uploads a dashboard to a Grafana endpoint.
+ *
+ * This class uses {@link DashboardSerializer#toString(Dashboard)} and
+ * {@link GrafanaClient#uploadDashboard(String, boolean)} method.
+ */
 public class DashboardUploader {
 
     private GrafanaClient client;
     private DashboardSerializer dashboardSerializer;
 
+    /**
+     * Constructor that sets the Grafana endpoint. It also creates the client,
+     * but no connection is opened at this point.
+     *
+     * @param endpoint Grafana endpoint to be used
+     */
     public DashboardUploader(GrafanaEndpoint endpoint) {
         client = new GrafanaClient(endpoint);
         dashboardSerializer = new DashboardSerializer();
@@ -35,7 +47,7 @@ public class DashboardUploader {
     /**
      * Serializes and uploads a dashboard.
      *
-     * Throws exceptions if everything's not fine.
+     * Throws exceptions if anything is wrong.
      *
      * @param dashboard dashboard to upload
      * @param overwrite should anything be overwritten?

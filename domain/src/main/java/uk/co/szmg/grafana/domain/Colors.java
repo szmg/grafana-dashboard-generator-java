@@ -28,12 +28,82 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.IOException;
 
+/**
+ * Grafana color triplet used in singlestat.
+ */
 @JsonSerialize(using = Colors.ColorsSerialiser.class)
 public class Colors {
 
-    private String low = "rgba(245, 54, 54, 0.9)";
-    private String mid = "rgba(237, 129, 40, 0.89)";
-    private String high = "rgba(50, 172, 45, 0.97)";
+    private String low;
+    private String mid;
+    private String high;
+
+    /**
+     * Default constructor with default colors: red, yellow, green.
+     */
+    public Colors() {
+        this("rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)");
+    }
+
+    /**
+     * Convenience constructor.
+     * @param low color used when the value is low
+     * @param mid color used when the value is medium
+     * @param high color used when the value is high
+     */
+    public Colors(String low, String mid, String high) {
+        this.low = low;
+        this.mid = mid;
+        this.high = high;
+    }
+
+    /**
+     * Gets color used when the value is low.
+     * @return color
+     */
+    public String getLow() {
+        return low;
+    }
+
+    /**
+     * Sets color used when the value is low.
+     * @param low color that's meaningful in HTML
+     */
+    public void setLow(String low) {
+        this.low = low;
+    }
+
+    /**
+     * Gets color used when the value is medium.
+     * @return color
+     */
+    public String getMid() {
+        return mid;
+    }
+
+    /**
+     * Sets color used when the value is medium.
+     * @param mid color that's meaningful in HTML
+     */
+    public void setMid(String mid) {
+        this.mid = mid;
+    }
+
+    /**
+     * Gets color used when the value is high.
+     * @return color
+     */
+    public String getHigh() {
+        return high;
+    }
+
+    /**
+     * Sets color used when the value is high.
+     * @param high color that's meaningful in HTML
+     */
+    public void setHigh(String high) {
+        this.high = high;
+    }
 
     public static class ColorsSerialiser extends JsonSerializer<Colors> {
 

@@ -33,7 +33,8 @@ import java.util.Map;
  * A naively simple Map wrapper. The goal was to be able to model JSON
  * objects that has known and unknown properties as well. This class
  * should be extended with the known fields, while one can always add
- * custom values using #addValue. (Or "change" the type of a known field.
+ * custom values using {@link #setValue(String, Object)} or {@link #withValue(String, Object)}.
+ * (Or "change" the type of a known field.
  *
  * Note that this class is mutable.
  */
@@ -42,15 +43,32 @@ public abstract class BaseJsonObject<C extends BaseJsonObject<C>> {
 
     private Map<String, Object> fields = new HashMap<>();
 
+    /**
+     * Sets a given field.
+     * @param fieldName field name, i.e., JSON property name when serialised
+     * @param value value, which should be serializable by Jackson; {@code null} values will not be included
+     */
     public void setValue(String fieldName, Object value) {
         fields.put(fieldName, value);
     }
 
+    /**
+     * Fluent setter of a given field.
+     * @param fieldName field name, i.e., JSON property name when serialised
+     * @param value value, which should be serializable by Jackson; {@code null} values will not be included
+     * @return itself, so it is chainable
+     */
     public C withValue(String fieldName, Object value) {
         fields.put(fieldName, value);
         return (C) this;
     }
 
+    /**
+     * Gets value of the given field, or {@code null} if not set.
+     * @param fieldName field name, i.e., JSON property name when serialised
+     * @param <T> expected type of the value
+     * @return the value if it has been set, {@code null} otherwise
+     */
     public <T> T getValue(String fieldName) {
         return (T) fields.get(fieldName);
     }

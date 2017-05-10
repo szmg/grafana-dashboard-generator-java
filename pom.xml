@@ -15,6 +15,7 @@
             <email>mate@szmg.uk.co.uk</email>
         </contributor>
     </contributors>
+
     <modules>
         <module>domain-generator-maven-plugin</module>
         <module>domain</module>

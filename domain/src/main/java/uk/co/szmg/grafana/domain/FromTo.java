@@ -20,23 +20,60 @@ package uk.co.szmg.grafana.domain;
  * #L%
  */
 
+/**
+ * Time range that is used in Grafana Dashboards.
+ * By default it's from "now-6h" to "now". Look up Grafana docs for valid values.
+ */
 public class FromTo {
     // TODO time type + utils
-    private String from = "now-6h";
-    private String to = "now";
+    private String from;
+    private String to;
 
+    /**
+     * Default constructor with default values: from "now-6h" to "now".
+     */
+    public FromTo() {
+        this("now-6h", "now");
+    }
+
+    /**
+     * Convenience constructor.
+     * @param from start of the displayed time range
+     * @param to end of the displayed time range
+     */
+    public FromTo(String from, String to) {
+        this.from = from;
+        this.to = to;
+    }
+
+    /**
+     * Gets the start of the displayed time range.
+     * @return Grafana time expression
+     */
     public String getFrom() {
         return from;
     }
 
+    /**
+     * Sets the start of the displayed time range.
+     * @param from Grafana time expression
+     */
     public void setFrom(String from) {
         this.from = from;
     }
 
+    /**
+     * Gets the end of the displayed time range.
+     * @return Grafana time expression
+     */
     public String getTo() {
         return to;
     }
 
+    /**
+     * Sets the end of the displayed time range.
+     * @param to Grafana time expression
+     */
     public void setTo(String to) {
         this.to = to;
     }

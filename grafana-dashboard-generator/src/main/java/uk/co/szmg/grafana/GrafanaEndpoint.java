@@ -22,6 +22,19 @@ package uk.co.szmg.grafana;
 
 /**
  * Grafana endpoint bean with auth data.
+ *
+ * To use API key authentication, see {@link #setApiKey(String)}.
+ *
+ * To use session cookie authentication, see {@link #setSessionCookie(String)}.
+ *
+ * If both are set, API key authentication will be used.
+ *
+ * If neither apiKey nor sessionCookie is set, no authentication will happen.
+ *
+ * To turn off SSL certificate validation for the current connection, see
+ * {@link #setSkipSSLValidation(boolean)}.
+ *
+ * The only required field is {@code baseUrl}.
  */
 public class GrafanaEndpoint {
 
@@ -39,6 +52,7 @@ public class GrafanaEndpoint {
 
     /**
      * Sets Grafana base URL.
+     * @param baseUrl Grafana base URL
      */
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;

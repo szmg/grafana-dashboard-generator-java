@@ -38,6 +38,12 @@ import java.security.cert.X509Certificate;
 
 /**
  * Simple and stupid Grafana client. Without any 3rd party dependencies (but java).
+ *
+ * It supports authentication with API key or with session cookie. If none of them
+ * is set in {@link GrafanaEndpoint} then no authentication will happen.
+ *
+ * It also support turning off SSL certificate validation for the connection (so not
+ * globally).
  */
 public class GrafanaClient {
 
@@ -45,12 +51,25 @@ public class GrafanaClient {
     private static final String API_DASHBOARDS_PATH = "api/dashboards/db";
     private GrafanaEndpoint endpoint;
 
+    /**
+     * Constructor that sets the Grafana endpoint.
+     *
+     * @param endpoint Grafana endpoint to be used
+     */
     public GrafanaClient(GrafanaEndpoint endpoint) {
         this.endpoint = endpoint;
     }
 
     /**
      * Uploads a dashboard to Grafana.
+     *
+     * If a dashboard with the same title exists, it will either be overwritten,
+     * when {@code overwrite} parameter is {@code true}, or an UnexpectedGrafanaResponseException
+     * is thrown.
+     *
+     * It also handles authentication based on the endpoint set by the constructor.
+     *
+     * It's thread-safe.
      *
      * @param dashboard JSON representation of the dashboard
      * @param overwrite should an existing dashboard with the same name be overwritten?
@@ -107,11 +126,10 @@ public class GrafanaClient {
         }
     }
 
-    private void disableSslCertValidation(HttpsURLConnection conn) {
-        conn.setSSLSocketFactory(SslCertValidationSkipper.noCheckSslContext.getSocketFactory());
-        conn.setHostnameVerifier(SslCertValidationSkipper.allValidHostname);
-    }
-
+    /**
+     * Adds authentication headers to request if needed.
+     * @param conn connection
+     */
     protected void addAuth(HttpURLConnection conn) {
         if (endpoint.getApiKey() != null) {
             conn.setRequestProperty("Authorization", "Bearer " + endpoint.getApiKey());
@@ -120,6 +138,11 @@ public class GrafanaClient {
         }
     }
 
+    /**
+     * Gets URL of the given path, relative to the Grafana endpoint.
+     * @param path path, relative to the Grafana endpoint
+     * @return absolute URL (as String) of the given path
+     */
     protected String getUrl(String path) {
         String url = endpoint.getBaseUrl();
         if (!url.endsWith("/")) {
@@ -127,6 +150,11 @@ public class GrafanaClient {
         }
         url += path;
         return url;
+    }
+
+    private void disableSslCertValidation(HttpsURLConnection conn) {
+        conn.setSSLSocketFactory(SslCertValidationSkipper.noCheckSslContext.getSocketFactory());
+        conn.setHostnameVerifier(SslCertValidationSkipper.allValidHostname);
     }
 
     private String readResponse(HttpURLConnection conn) throws IOException {
@@ -140,21 +168,39 @@ public class GrafanaClient {
         return response.toString();
     }
 
+    /**
+     * Exception that is thrown when the status code of a Grafana request is outside of the
+     * 200-299 range.
+     */
     public static class UnexpectedGrafanaResponseException extends IllegalStateException {
 
         private int responseCode;
         private String response;
 
+        /**
+         * Constuctor that sets all required fields.
+         * @param msg the message
+         * @param responseCode the HTTP status code of the Grafana response
+         * @param response the HTTP status line of the Grafana response
+         */
         public UnexpectedGrafanaResponseException(String msg, int responseCode, String response) {
             super(msg);
             this.responseCode = responseCode;
             this.response = response;
         }
 
+        /**
+         * Gets HTTP status code of the triggering response.
+         * @return HTTP status code
+         */
         public int getResponseCode() {
             return responseCode;
         }
 
+        /**
+         * Gets HTTP status line of the triggering response.
+         * @return HTTP status
+         */
         public String getResponse() {
             return response;
         }
