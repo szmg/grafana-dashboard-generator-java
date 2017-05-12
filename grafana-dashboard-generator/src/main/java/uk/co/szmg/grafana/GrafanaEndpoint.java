@@ -45,6 +45,7 @@ public class GrafanaEndpoint {
 
     /**
      * Gets Grafana base URL.
+     * @return base URL
      */
     public String getBaseUrl() {
         return baseUrl;
@@ -80,6 +81,8 @@ public class GrafanaEndpoint {
      * http://docs.grafana.org/http_api/auth/
      *
      * You need either this or the sessionCookie for authentication.
+     *
+     * @param apiKey API key
      */
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
@@ -99,6 +102,8 @@ public class GrafanaEndpoint {
      * To get the value log in and copy the value of the "grafana_sess" cookie.
      *
      * You need either this or the apiKey for authentication.
+     *
+     * @param sessionCookie session cookie
      */
     public void setSessionCookie(String sessionCookie) {
         this.sessionCookie = sessionCookie;

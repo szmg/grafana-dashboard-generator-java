@@ -27,7 +27,10 @@ public class DomainFactories {
         <#if !domain.abstract>
             <#assign className = domain.name?cap_first>
 
-            /** Creates a new ${domain.name}. */
+            /**
+             * Creates a new ${domain.name}.
+             * @return a new instance of ${className}
+             */
             public static ${className} new${className}() {
                 return new ${className}();
             }

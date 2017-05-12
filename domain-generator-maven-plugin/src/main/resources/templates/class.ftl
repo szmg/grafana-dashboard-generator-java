@@ -52,25 +52,34 @@ public ${className}() {
 <#list domain.fields as field>
     <#assign fieldNameConst = toConstName(field.name)>
     <#assign fieldNameCap = field.name?cap_first>
-    <#assign javadoc>
-        <#if field.description??>
-            /**
-              * ${field.description}
-              */
-        </#if>
-    </#assign>
 
-    ${javadoc}
+    /**
+      * Gets ${field.name}.
+      * ${field.description!?html}
+      *
+      * @return ${field.name}
+      */
     public ${field.type} get${fieldNameCap}() {
         return getValue(${fieldNameConst});
     }
 
-    ${javadoc}
+    /**
+      * Sets ${field.name}.
+      * ${field.description!?html}
+      *
+      * @param ${field.name} the ${field.name}
+      */
     public void set${fieldNameCap}(${field.type} ${field.name}) {
         setValue(${fieldNameConst}, ${field.name});
     }
 
-    ${javadoc}
+    /**
+      * Sets ${field.name}.
+      * ${field.description!?html}
+      *
+      * @param ${field.name} the ${field.name}
+      * @return itself
+      */
     public ${withReturnType} with${fieldNameCap}(${field.type} ${field.name}) {
         return withValue(${fieldNameConst}, ${field.name});
     }
@@ -80,7 +89,13 @@ public ${className}() {
         <#assign singularName = fieldNameCap?remove_ending("s")>
         <#assign paramName = singularName?uncap_first>
 
-        ${javadoc}
+        /**
+          * Adds a(n) ${field.name?remove_ending("s")}.
+          * ${field.description!?html}
+          *
+          * @param ${paramName} the ${paramName}
+          * @return itself
+          */
         public ${withReturnType} add${singularName}(${innerType} ${paramName}) {
             ${field.type} list = get${fieldNameCap}();
             if (list == null) {
