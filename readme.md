@@ -1,7 +1,7 @@
 # Grafana dashboard builder in Java
 
 [![Build Status](https://travis-ci.org/szmg/grafana-dashboard-generator-java.svg?branch=master)](https://travis-ci.org/szmg/grafana-dashboard-generator-java)
-[![Maven Central](https://img.shields.io/maven-central/v/uk.co.szmg.grafana/grafana-dashboard-generator.svg)]()
+[![Maven Central](https://img.shields.io/maven-central/v/uk.co.szmg.grafana/grafana-dashboard-generator.svg)](https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22grafana-dashboard-generator%22)
 
 
 ```
@@ -25,7 +25,13 @@ Code your Grafana dashboards in Java, more or less type-safe, with auto-complete
 
 ### Maven
 
-TODO Maven
+```
+<dependency>
+    <groupId>uk.co.szmg.grafana</groupId>
+    <artifactId>grafana-dashboard-generator</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
 
 ### Basics
 
