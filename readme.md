@@ -1,5 +1,9 @@
 # Grafana dashboard builder in Java
 
+[![Build Status](https://travis-ci.org/szmg/grafana-dashboard-generator-java.svg?branch=master)](https://travis-ci.org/szmg/grafana-dashboard-generator-java)
+[![Maven Central](https://img.shields.io/maven-central/v/uk.co.szmg.grafana/grafana-dashboard-generator.svg)]()
+
+
 ```
 This is Work in progress
 ```
