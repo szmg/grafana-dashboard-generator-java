@@ -113,11 +113,16 @@ public class GrafanaClient {
         }
 
         int responseCode = conn.getResponseCode();
-        String response = readResponse(conn);
 
         if (responseCode / 100 == 2) {
             return responseCode;
         } else {
+            String response;
+            try {
+                response = readResponse(conn);
+            } catch (IOException ex) {
+                response = "Cannot read response; " + ex.getMessage();
+            }
             throw new UnexpectedGrafanaResponseException(
                     String.format("Unexpected response from [%s]; responseCode: [%d]; response: [%s]", url, responseCode, response),
                     responseCode,

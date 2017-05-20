@@ -1,8 +1,8 @@
-package uk.co.szmg.grafana.cli;
+package uk.co.szmg.grafana.example;
 
 /*-
  * #%L
- * grafana-dashboard-generator-cli
+ * grafana-dashboard-generator-example
  * %%
  * Copyright (C) 2017 Mate Gabor Szvoboda
  * %%
@@ -20,10 +20,14 @@ package uk.co.szmg.grafana.cli;
  * #L%
  */
 
+import uk.co.szmg.grafana.cli.DashboardGeneratorApplication;
+
+import java.io.IOException;
+
 public class Main {
 
-    public static final void main(String args[]) {
-        
+    public static void main(String[] args) throws IOException {
+        new DashboardGeneratorApplication("uk.co.szmg.grafana.example.dashboards").main(args);
     }
 
 }

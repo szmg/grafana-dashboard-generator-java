@@ -21,14 +21,24 @@ package uk.co.szmg.grafana.cli;
  */
 
 import org.junit.Test;
+import uk.co.szmg.grafana.cli.internal.DashboardStore;
+import uk.co.szmg.grafana.domain.Dashboard;
 
-import java.util.Optional;
+import java.util.List;
 
-public class DashboardGeneratorTest {
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+public class DashboardStoreTest {
 
     @Test
     public void shouldFindDashboards() {
-        new DashboardGenerator("uk.co.szmg.grafana.cli.example", Optional.empty()).generateAndUpload();
+        DashboardStore store = new DashboardStore("uk.co.szmg.grafana.cli.example");
+        store.load();
+        List<Dashboard> dashboards = store.getDashboards();
+
+        assertThat(dashboards.size(), is(1));
+        assertThat(dashboards.get(0).getTitle(), is("Overview dashboard"));
     }
 
 }
