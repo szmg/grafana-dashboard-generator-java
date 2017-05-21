@@ -26,6 +26,8 @@ fields:
   - name: links
     type: List<DashboardLevelLink>
     description: "Links to be shown on the top of the dashboard."
+  - name: annotations
+    type: AnnotationList
 
 ---
 name: Row
@@ -108,3 +110,46 @@ fields:
     type: List<String>
   - name: title
     type: String
+
+---
+name: AnnotationList
+fields:
+  - name: list
+    type: List<Annotation>
+
+---
+name: Annotation
+abstract: true
+fields:
+  - name: datasource
+    type: String
+  - name: enable
+    type: Boolean
+  - name: iconColor
+    type: String
+  - name: name
+    type: String
+
+---
+name: AlertAnnotation
+extends: Annotation
+defaultValues:
+  datasource: '"-- Grafana --"'
+  type: '"alert"'
+fields:
+  - name: limit
+    type: Integer
+    description: "Watch out, it can't be anything in the UI. 10, 50, 100, 200, 300, 500, 1000, 2000."
+  - name: type
+    type: String
+
+---
+name: GraphiteAnnotation
+extends: Annotation
+fields:
+  - name: tags
+    type: String
+    description: "Graphite events query"
+  - name: target
+    type: String
+    description: "Graphite metrics query"

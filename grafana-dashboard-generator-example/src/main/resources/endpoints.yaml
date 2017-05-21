@@ -12,4 +12,5 @@ test:
 production:
   baseUrl: https://grafana.invalidcert.com
   apiKey: some-other-api-key
+  # sessionCookie:
   skipSSLValidation: yes

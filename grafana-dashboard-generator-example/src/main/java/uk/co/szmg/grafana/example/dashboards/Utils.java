@@ -22,7 +22,10 @@ package uk.co.szmg.grafana.example.dashboards;
 
 import uk.co.szmg.grafana.domain.Dashboard;
 
+import static uk.co.szmg.grafana.domain.DomainFactories.newAlertAnnotation;
+import static uk.co.szmg.grafana.domain.DomainFactories.newAnnotationList;
 import static uk.co.szmg.grafana.domain.DomainFactories.newDashboard;
+import static uk.co.szmg.grafana.domain.DomainFactories.newGraphiteAnnotation;
 import static uk.co.szmg.grafana.domain.DomainFactories.newRow;
 import static uk.co.szmg.grafana.domain.DomainFactories.newText;
 
@@ -33,7 +36,17 @@ public class Utils {
                 .withTitle(title)
                 .addRow(newRow()
                         .addPanel(newText()
-                                .withSpan(12).withContent("This was created by " + clazz.getSimpleName())));
+                                .withSpan(12).withContent("This was created by " + clazz.getSimpleName())))
+                .withAnnotations(newAnnotationList()
+                        .addList(newAlertAnnotation()
+                                .withName("alert")
+                                .withLimit(300)
+                                .withEnable(true))
+                        .addList(newGraphiteAnnotation()
+                                .withName("deployment")
+                                .withDatasource("graphite")
+                                .withTarget("app.deployment")
+                                .withIconColor("green")));
     }
 
 }

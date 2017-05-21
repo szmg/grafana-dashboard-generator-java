@@ -28,7 +28,7 @@ import java.util.Set;
 <#assign parent = domain.extendedClass!"BaseJsonObject">
 <#if domain.abstract>
     <#assign withReturnType = "C">
-    public class ${className}<C extends BaseJsonObject<C>> extends ${parent}<C> {
+    public abstract class ${className}<C extends BaseJsonObject<C>> extends ${parent}<C> {
 <#else>
     public class ${className} extends ${parent}<${className}> {
 </#if>
@@ -97,12 +97,12 @@ public ${className}() {
           * @return itself
           */
         public ${withReturnType} add${singularName}(${innerType} ${paramName}) {
-            ${field.type} list = get${fieldNameCap}();
-            if (list == null) {
-                list = new java.util.ArrayList<>();
+            ${field.type} _list = get${fieldNameCap}();
+            if (_list == null) {
+                _list = new java.util.ArrayList<>();
             }
-            list.add(${paramName});
-            return with${fieldNameCap}(list);
+            _list.add(${paramName});
+            return with${fieldNameCap}(_list);
         }
     </#if>
 </#list>
