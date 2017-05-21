@@ -1,0 +1,15 @@
+# This file contains different Grafana endpoints.
+# It's parsed to Map<String, uk.co.szmg.grafana.GrafanaEndpoint>.
+
+
+# This is my local test Grafana server! Hurray!
+test:
+  baseUrl: http://localhost:8080
+  apiKey: some-api-key
+
+
+# This one's for production... need to find a solution for auth
+production:
+  baseUrl: https://grafana.invalidcert.com
+  apiKey: some-other-api-key
+  skipSSLValidation: yes

@@ -42,6 +42,7 @@
         <module>domain-generator-maven-plugin</module>
         <module>domain</module>
         <module>grafana-dashboard-generator</module>
+        <module>grafana-dashboard-generator-cli</module>
     </modules>
 
     <properties>
@@ -52,6 +53,21 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>uk.co.szmg.grafana</groupId>
+                <artifactId>domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>uk.co.szmg.grafana</groupId>
+                <artifactId>grafana-dashboard-generator</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>uk.co.szmg.grafana</groupId>
+                <artifactId>grafana-dashboard-generator-cli</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
@@ -60,11 +76,6 @@
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-yaml</artifactId>
                 <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>uk.co.szmg.grafana</groupId>
-                <artifactId>domain</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -95,6 +106,26 @@
                 <groupId>com.google.googlejavaformat</groupId>
                 <artifactId>google-java-format</artifactId>
                 <version>1.3</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>4.2.0.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>de.codeshelf.consoleui</groupId>
+                <artifactId>consoleui</artifactId>
+                <version>0.0.9</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.jopt-simple</groupId>
+                <artifactId>jopt-simple</artifactId>
+                <version>5.0.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -163,6 +194,12 @@
     </build>
 
     <profiles>
+        <profile>
+            <id>withExample</id>
+            <modules>
+                <module>grafana-dashboard-generator-example</module>
+            </modules>
+        </profile>
         <profile>
             <id>release</id>
             <build>
