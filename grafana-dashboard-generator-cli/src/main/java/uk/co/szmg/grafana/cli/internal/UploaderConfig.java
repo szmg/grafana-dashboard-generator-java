@@ -29,12 +29,21 @@ import java.util.Optional;
 
 public class UploaderConfig {
 
+    private boolean batchMode;
     private DashboardStore dashboardStore;
     private GrafanaEndpointStore endpointStore;
     private Boolean overwrite;
     private Optional<GrafanaEndpoint> endpoint;
     private List<Dashboard> dashboards;
     private File outputDirectory;
+
+    public boolean isBatchMode() {
+        return batchMode;
+    }
+
+    public void setBatchMode(boolean batchMode) {
+        this.batchMode = batchMode;
+    }
 
     public DashboardStore getDashboardStore() {
         return dashboardStore;
@@ -83,4 +92,5 @@ public class UploaderConfig {
     public void setOutputDirectory(File outputDirectory) {
         this.outputDirectory = outputDirectory;
     }
+
 }

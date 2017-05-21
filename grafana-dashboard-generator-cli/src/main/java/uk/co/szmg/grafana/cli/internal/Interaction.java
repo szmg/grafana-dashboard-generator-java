@@ -74,7 +74,7 @@ public class Interaction {
                 }
                 endpointPrompt
                         .newItem("-")
-                        .text("Just generate the files to ./output")
+                        .text("Just generate the files to " + config.getOutputDirectory())
                         .add()
                         .addPrompt();
             }
@@ -99,6 +99,12 @@ public class Interaction {
                 // only the confirmation, we know everything
                 break;
             }
+
+            if (config.isBatchMode()) {
+                System.err.println("Missing info for batch mode"); // TODO details
+                throw new ExitPlease(-6);
+            }
+
             results = prompt.prompt(questions);
         } while (!getBooleanResult(results, "confirmed"));
 

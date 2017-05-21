@@ -25,7 +25,9 @@ import uk.co.szmg.grafana.DashboardSerializer;
 import uk.co.szmg.grafana.DashboardUploader;
 import uk.co.szmg.grafana.GrafanaClient;
 import uk.co.szmg.grafana.cli.internal.ClasspathGrafanaEndpointStore;
+import uk.co.szmg.grafana.cli.internal.CommandLineArgs;
 import uk.co.szmg.grafana.cli.internal.DashboardStore;
+import uk.co.szmg.grafana.cli.internal.ExitPlease;
 import uk.co.szmg.grafana.cli.internal.GrafanaEndpointStore;
 import uk.co.szmg.grafana.cli.internal.Interaction;
 import uk.co.szmg.grafana.cli.internal.UploaderConfig;
@@ -52,7 +54,7 @@ public class DashboardGeneratorApplication {
         try {
             return safeMain(args);
         } catch (ExitPlease ex) {
-            return ex.returnCode;
+            return ex.getReturnCode();
         }
     }
 
@@ -64,9 +66,10 @@ public class DashboardGeneratorApplication {
 
         UploaderConfig config = new UploaderConfig();
 
-        // TODO parse args
+        CommandLineArgs commandLineArgs = new CommandLineArgs();
+        commandLineArgs.parse(args, config);
         initStores(config);
-        // TODO filter endpoints and dashboards based on args
+        commandLineArgs.apply(config);
         loadDefaults(config);
 
         Interaction.askUserForDetails(config);
@@ -125,6 +128,10 @@ public class DashboardGeneratorApplication {
         if (config.getOutputDirectory() == null) {
             config.setOutputDirectory(new File("./output"));
         }
+
+        if (config.isBatchMode() && config.getOverwrite() == null) {
+            config.setOverwrite(false);
+        }
     }
 
     private void upload(UploaderConfig config) {
@@ -177,16 +184,4 @@ public class DashboardGeneratorApplication {
         return dashboard.getTitle().replaceAll("[\\s:/\\\\]+", "-") + ".json";
     }
 
-    private class ExitPlease extends IllegalStateException {
-
-        private int returnCode;
-
-        public ExitPlease(int returnCode) {
-            this.returnCode = returnCode;
-        }
-
-        public int getReturnCode() {
-            return returnCode;
-        }
-    }
 }
