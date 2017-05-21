@@ -1,37 +1,110 @@
 name: Dashboard
 fields:
- - name: id
-   type: Integer
- - name: title
-   type: String
- - name: style
-   type: String
-   description: "Style, e.g., 'dark'"
- - name: timezone
-   type: String
-   description: "E.g., 'browser'"
- - name: editable
-   type: Boolean
- - name: hideControls
-   type: Boolean
- - name: graphTooltip
-   type: Integer
- - name: rows
-   type: List<Row>
- - name: time
-   type: FromTo
+  - name: id
+    type: Integer
+  - name: title
+    type: String
+  - name: style
+    type: String
+    description: "Style, e.g., 'dark'"
+  - name: timezone
+    type: String
+    description: "E.g., 'browser'"
+  - name: editable
+    type: Boolean
+  - name: hideControls
+    type: Boolean
+  - name: graphTooltip
+    type: Integer
+  - name: rows
+    type: List<Row>
+  - name: time
+    type: FromTo
+  - name: tags
+    type: List<String>
+    description: "List of tags, which can be used for e.g., link generation"
+  - name: links
+    type: List<DashboardLevelLink>
+    description: "Links to be shown on the top of the dashboard."
 
 ---
 name: Row
 fields:
- - name: collapse
-   type: Boolean
- - name: editable
-   type: Boolean
- - name: height
-   type: String
-   description: "E.g., '200px'"
- - name: panels
-   type: List<Panel>
- - name: title
-   type: String
+  - name: collapse
+    type: Boolean
+  - name: editable
+    type: Boolean
+  - name: height
+    type: String
+    description: "E.g., '200px'"
+  - name: panels
+    type: List<Panel>
+  - name: title
+    type: String
+
+---
+name: DashboardLevelLink
+abstract: true
+fields:
+  - name: type
+    type: String
+    readonly: true
+
+---
+name: ExternalDashboardLevelLink
+extends: DashboardLevelLink
+defaultValues:
+  type: '"link"'
+fields:
+  - name: icon
+    type: String
+  - name: includeVars
+    type: Boolean
+  - name: keepTime
+    type: Boolean
+  - name: targetBlank
+    type: Boolean
+  - name: title
+    type: String
+  - name: tooltip
+    type: String
+  - name: url
+    type: String
+
+---
+name: LinksToDashboards
+extends: DashboardLevelLink
+defaultValues:
+  type: '"dashboards"'
+  tags: 'new java.util.ArrayList()'
+fields:
+  - name: includeVars
+    type: Boolean
+  - name: keepTime
+    type: Boolean
+  - name: targetBlank
+    type: Boolean
+  - name: tags
+    type: List<String>
+
+---
+name: DropdownToDashboards
+extends: DashboardLevelLink
+defaultValues:
+  type: '"dashboards"'
+  asDropdown: 'true'
+  tags: 'new java.util.ArrayList()'
+fields:
+  - name: asDropdown
+    type: Boolean
+    readonly: true
+  - name: includeVars
+    type: Boolean
+  - name: keepTime
+    type: Boolean
+  - name: targetBlank
+    type: Boolean
+  - name: tags
+    type: List<String>
+  - name: title
+    type: String

@@ -25,16 +25,19 @@ import uk.co.szmg.grafana.domain.DomainFactories;
 
 import javax.inject.Named;
 
+import static uk.co.szmg.grafana.domain.DomainFactories.newDropdownToDashboards;
 import static uk.co.szmg.grafana.domain.DomainFactories.newRow;
 import static uk.co.szmg.grafana.domain.DomainFactories.newText;
 
 @Named
-public class FirstDashboard extends Dashboard {
+public class FirstDashboard extends Dashboard { // not recommended as it enables access to protected members
 
     public FirstDashboard() {
         withTitle("Dashboard with inheritance");
         addRow(newRow().addPanel(newText().withContent("This was created by extending Dashboard and").withSpan(12)));
         addRow(newRow().addPanel(newText().withContent("marking it as Spring bean with @Named annotation").withSpan(12)));
+        addTag("mate");
+        addLink(newDropdownToDashboards().withTitle("All dashboard").withTargetBlank(true));
     }
 
 }
