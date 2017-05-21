@@ -20,52 +20,71 @@ package uk.co.szmg.grafana.cli;
  * #L%
  */
 
-import de.codeshelf.consoleui.elements.ConfirmChoice;
-import de.codeshelf.consoleui.prompt.CheckboxResult;
-import de.codeshelf.consoleui.prompt.ConfirmResult;
-import de.codeshelf.consoleui.prompt.ConsolePrompt;
-import de.codeshelf.consoleui.prompt.ListResult;
-import de.codeshelf.consoleui.prompt.PromtResultItemIF;
-import de.codeshelf.consoleui.prompt.builder.CheckboxPromptBuilder;
-import de.codeshelf.consoleui.prompt.builder.ListPromptBuilder;
-import de.codeshelf.consoleui.prompt.builder.PromptBuilder;
 import org.fusesource.jansi.AnsiConsole;
 import uk.co.szmg.grafana.DashboardSerializer;
 import uk.co.szmg.grafana.DashboardUploader;
 import uk.co.szmg.grafana.GrafanaClient;
-import uk.co.szmg.grafana.GrafanaEndpoint;
 import uk.co.szmg.grafana.cli.internal.ClasspathGrafanaEndpointStore;
 import uk.co.szmg.grafana.cli.internal.DashboardStore;
 import uk.co.szmg.grafana.cli.internal.GrafanaEndpointStore;
+import uk.co.szmg.grafana.cli.internal.Interaction;
+import uk.co.szmg.grafana.cli.internal.UploaderConfig;
 import uk.co.szmg.grafana.domain.Dashboard;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.fusesource.jansi.Ansi.ansi;
 
 public class DashboardGeneratorApplication {
 
-    private DashboardStore dashboardStore;
+    private String rootPackage;
 
     public DashboardGeneratorApplication(String rootPackage) {
-        dashboardStore = new DashboardStore(rootPackage);
+        this.rootPackage = rootPackage;
     }
 
     public int main(String[] args) throws IOException {
-        AnsiConsole.systemInstall();
+        try {
+            return safeMain(args);
+        } catch (ExitPlease ex) {
+            return ex.returnCode;
+        }
+    }
 
-        dashboardStore.load();
+    private int safeMain(String[] args) throws IOException, ExitPlease {
+        AnsiConsole.systemInstall();
 
         // welcome
         System.out.println(ansi().render("\n@|blue Welcome to Grafana Dashboard Builder|@\n"));
+
+        UploaderConfig config = new UploaderConfig();
+
+        // TODO parse args
+        initStores(config);
+        // TODO filter endpoints and dashboards based on args
+        loadDefaults(config);
+
+        Interaction.askUserForDetails(config);
+
+        if (config.getEndpoint().isPresent()) {
+            upload(config);
+        } else {
+            writeToFile(config);
+        }
+
+        return 0;
+    }
+
+    private void initStores(UploaderConfig config) {
+        // dashboard
+        config.setDashboardStore(new DashboardStore(rootPackage));
+        DashboardStore dashboardStore = config.getDashboardStore();
+        dashboardStore.load();
 
         // check duplicates
         Collection<String> duplicates = dashboardStore.getDuplicates();
@@ -74,112 +93,44 @@ public class DashboardGeneratorApplication {
             for (String duplicate : duplicates) {
                 System.err.println("  " + duplicate);
             }
-            return -1;
+            throw new ExitPlease(-1);
         }
 
-        // dashboards
-        List<Dashboard> selectedDashboards = null;
-        List<Dashboard> dashboards = dashboardStore.getDashboards();
-        if (dashboards.size() == 1) {
-            selectedDashboards = dashboards;
+        // endpoint
+        GrafanaEndpointStore endpointStore = config.getEndpointStore();
+        if (endpointStore == null) {
+            endpointStore = new ClasspathGrafanaEndpointStore("/endpoints.yaml");
+            config.setEndpointStore(endpointStore);
         }
 
-        // endpoints
-        GrafanaEndpointStore endpointStore = new ClasspathGrafanaEndpointStore("/endpoints.yaml");
-        endpointStore.load();
-
-        Optional<GrafanaEndpoint> endpoint = null;
-        Map<String, GrafanaEndpoint> endpoints = endpointStore.getEndpoints();
-        if (endpoints.isEmpty()) {
-            endpoint = Optional.empty();
-        } else if (endpoints.size() == 1) {
-            endpoint = Optional.of(endpoints.values().iterator().next());
+        try {
+            endpointStore.load();
+        } catch (IOException e) {
+            System.err.println("Could not load endpoint store; " + e.getMessage());
+            throw new ExitPlease(-2);
         }
 
-        // Ask stuff
-        ConsolePrompt prompt = new ConsolePrompt();
-
-        Map<String, ? extends PromtResultItemIF> results;
-        do {
-            PromptBuilder promptBuilder = prompt.getPromptBuilder();
-
-            if (selectedDashboards == null) {
-                CheckboxPromptBuilder dashboardPrompt = promptBuilder.createCheckboxPrompt()
-                        .name("dashboards")
-                        .message("Which dashboard(s) would you like to work with?");
-                for (int i = 0; i < dashboards.size(); i++) {
-                    dashboardPrompt.newItem(Integer.toString(i)).text(dashboards.get(i).getTitle()).check().add();
-                }
-                dashboardPrompt.addPrompt();
-            }
-
-            if (endpoint == null) {
-                ListPromptBuilder endpointPrompt = promptBuilder.createListPrompt()
-                        .name("endpoint")
-                        .message("Which endpoint to upload to?");
-                for (Map.Entry<String, GrafanaEndpoint> entry : endpoints.entrySet()) {
-                    endpointPrompt
-                            .newItem(entry.getKey())
-                            .text(String.format("%s (%s)", entry.getKey(), entry.getValue().getBaseUrl()))
-                            .add();
-                }
-                endpointPrompt
-                        .newItem("-")
-                        .text("Just generate the files to ./output")
-                        .add()
-                        .addPrompt();
-            }
-
-            promptBuilder.createConfirmPromp()
-                    .name("overwrite")
-                    .message("Should dashboards be overwritten if already exist?")
-                    .defaultValue(ConfirmChoice.ConfirmationValue.YES)
-                    .addPrompt();
-
-            promptBuilder.createConfirmPromp()
-                    .name("confirmed")
-                    .message("Are you ready?")
-                    .defaultValue(ConfirmChoice.ConfirmationValue.YES)
-                    .addPrompt();
-
-            results = prompt.prompt(promptBuilder.build());
-        } while (!getBooleanResult(results, "confirmed"));
-
-        if (results.containsKey("dashboards")) {
-            CheckboxResult selection = (CheckboxResult) results.get("dashboards");
-            selectedDashboards = new ArrayList<>();
-            for (String i : selection.getSelectedIds()) {
-                selectedDashboards.add(dashboards.get(Integer.parseInt(i, 10)));
-            }
-        }
-
-        if (results.containsKey("endpoint")) {
-            ListResult result = (ListResult) results.get("endpoint");
-            if ("-".equals(result.getSelectedId())) {
-                endpoint = Optional.empty();
-            } else {
-                endpoint = Optional.of(endpoints.get(result.getSelectedId()));
-            }
-        }
-
-        boolean overwrite = getBooleanResult(results, "overwrite");
-
-        if (endpoint.isPresent()) {
-            upload(selectedDashboards, endpoint.get(), overwrite);
-        } else {
-            writeToFile(selectedDashboards, new File("./output"), overwrite);
-        }
-
-        return 0;
     }
 
-    private boolean getBooleanResult(Map<String, ? extends PromtResultItemIF> results, String key) {
-        return ((ConfirmResult) results.get(key)).getConfirmed() == ConfirmChoice.ConfirmationValue.YES;
+    private void loadDefaults(UploaderConfig config) {
+        List<Dashboard> dashboards = config.getDashboardStore().getDashboards();
+        if (config.getDashboards() == null && dashboards.size() == 1) {
+            config.setDashboards(dashboards);
+        }
+
+        if (config.getEndpointStore().getEndpoints().isEmpty()) {
+            config.setEndpoint(Optional.empty());
+        }
+
+        if (config.getOutputDirectory() == null) {
+            config.setOutputDirectory(new File("./output"));
+        }
     }
 
-    private void upload(List<Dashboard> selectedDashboards, GrafanaEndpoint grafanaEndpoint, boolean overwrite) {
-        DashboardUploader dashboardUploader = new DashboardUploader(grafanaEndpoint);
-        for (Dashboard dashboard : selectedDashboards) {
+    private void upload(UploaderConfig config) {
+        boolean overwrite = config.getOverwrite();
+        DashboardUploader dashboardUploader = new DashboardUploader(config.getEndpoint().get());
+        for (Dashboard dashboard : config.getDashboards()) {
             System.out.printf("%s: ", dashboard.getTitle());
 
             try {
@@ -201,14 +152,15 @@ public class DashboardGeneratorApplication {
         }
     }
 
-    private void writeToFile(List<Dashboard> selectedDashboards, File outputDir, boolean overwrite) throws IOException {
+    private void writeToFile(UploaderConfig config) throws IOException {
         DashboardSerializer dashboardSerializer = new DashboardSerializer();
-        outputDir.mkdirs();
-        for (Dashboard dashboard : selectedDashboards) {
+        File outputDirectory = config.getOutputDirectory();
+        outputDirectory.mkdirs();
+        for (Dashboard dashboard : config.getDashboards()) {
             System.out.printf("%s: ", dashboard.getTitle());
 
-            File f = new File(outputDir, filenameFor(dashboard));
-            if (f.exists() && !overwrite) {
+            File f = new File(outputDirectory, filenameFor(dashboard));
+            if (f.exists() && !config.getOverwrite()) {
                 System.out.println(ansi().render("@|red already exists|@"));
             } else {
                 try (FileOutputStream stream = new FileOutputStream(f)) {
@@ -225,4 +177,16 @@ public class DashboardGeneratorApplication {
         return dashboard.getTitle().replaceAll("[\\s:/\\\\]+", "-") + ".json";
     }
 
+    private class ExitPlease extends IllegalStateException {
+
+        private int returnCode;
+
+        public ExitPlease(int returnCode) {
+            this.returnCode = returnCode;
+        }
+
+        public int getReturnCode() {
+            return returnCode;
+        }
+    }
 }
