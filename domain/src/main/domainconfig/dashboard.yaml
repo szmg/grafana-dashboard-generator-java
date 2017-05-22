@@ -28,6 +28,8 @@ fields:
     description: "Links to be shown on the top of the dashboard."
   - name: annotations
     type: AnnotationList
+  - name: templating
+    type: TemplateList
 
 ---
 name: Row

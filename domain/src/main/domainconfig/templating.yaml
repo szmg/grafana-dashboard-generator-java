@@ -1,0 +1,73 @@
+name: TemplateList
+fields:
+  - name: list
+    type: List<Template>
+
+---
+name: Template
+defaultValues:
+  options: 'new java.util.ArrayList()'
+  refresh: 2
+fields:
+  - name: name
+    type: String
+  - name: label
+    type: String
+  - name: hide
+    type: int
+    description: "Hide: 0 for none, 1 for label, 2 for variable"
+  - name: current
+    type: SelectedTemplate
+  - name: type
+    type: String
+    description: "valid values: query, interval, datasource, custom, constant"
+  - name: allValue
+    type: String
+    description: "Custom all value"
+  - name: includeAll
+    type: Boolean
+    description: "Include All option"
+  - name: multi
+    type: Boolean
+    description: "Enables multiple values to be selected at the same time"
+  - name: datasource
+    type: String
+  - name: options
+    type: List<TemplateOption>
+    description: "option list"
+  - name: query
+    type: String
+    description: "This is the Graphite query, the constant value or the comma separated list of custom values."
+  - name: refresh
+    type: int
+    description: "0 for never, 1 for On dashboard load, 2 for On Time Range Change"
+  - name: regex
+    type: String
+    description: "Optional, if you want to extract part of a series name or metric node segment."
+  - name: sort
+    type: int
+    description: >
+      0 for none,
+      1 for alphabetical asc,
+      2 for alphabetical desc,
+      3 for numerical asc,
+      4 for numerical desc
+  - name: tagValuesQuery
+    type: String
+  - name: tags
+    type: List<String>
+  - name: tagsQuery
+    type: String
+  - name: useTags
+    type: Boolean
+    description: "Value groups/tags (Experimental feature)"
+
+---
+name: TemplateOption
+fields:
+  - name: selected
+    type: Boolean
+  - name: text
+    type: String
+  - name: value
+    type: String

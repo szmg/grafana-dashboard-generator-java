@@ -21,12 +21,16 @@ package uk.co.szmg.grafana.example.dashboards;
  */
 
 import uk.co.szmg.grafana.domain.Dashboard;
+import uk.co.szmg.grafana.domain.SelectedTemplate;
 
 import static uk.co.szmg.grafana.domain.DomainFactories.newAlertAnnotation;
 import static uk.co.szmg.grafana.domain.DomainFactories.newAnnotationList;
 import static uk.co.szmg.grafana.domain.DomainFactories.newDashboard;
 import static uk.co.szmg.grafana.domain.DomainFactories.newGraphiteAnnotation;
 import static uk.co.szmg.grafana.domain.DomainFactories.newRow;
+import static uk.co.szmg.grafana.domain.DomainFactories.newTemplate;
+import static uk.co.szmg.grafana.domain.DomainFactories.newTemplateList;
+import static uk.co.szmg.grafana.domain.DomainFactories.newTemplateOption;
 import static uk.co.szmg.grafana.domain.DomainFactories.newText;
 
 public class Utils {
@@ -37,6 +41,10 @@ public class Utils {
                 .addRow(newRow()
                         .addPanel(newText()
                                 .withSpan(12).withContent("This was created by " + clazz.getSimpleName())))
+                .addRow(newRow()
+                        .withHeight("95px")
+                        .addPanel(newText()
+                                .withSpan(12).withContent("Selected env: $env")))
                 .withAnnotations(newAnnotationList()
                         .addList(newAlertAnnotation()
                                 .withName("alert")
@@ -46,7 +54,17 @@ public class Utils {
                                 .withName("deployment")
                                 .withDatasource("graphite")
                                 .withTarget("app.deployment")
-                                .withIconColor("green")));
+                                .withIconColor("green")))
+                .withTemplating(newTemplateList()
+                        .addList(newTemplate()
+                                .withName("env")
+                                .withLabel("Environment")
+                                .withType("custom")
+                                .withQuery("staging,canary,production,perf")
+                                // options have to be added... templating support should be revised...
+                                .addOption(newTemplateOption().withValue("staging").withText("staging"))
+                                .addOption(newTemplateOption().withValue("production").withText("production"))
+                                .withCurrent(new SelectedTemplate("staging", "staging"))));
     }
 
 }

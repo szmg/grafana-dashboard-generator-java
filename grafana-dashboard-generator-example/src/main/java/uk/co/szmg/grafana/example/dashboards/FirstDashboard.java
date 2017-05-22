@@ -21,7 +21,6 @@ package uk.co.szmg.grafana.example.dashboards;
  */
 
 import uk.co.szmg.grafana.domain.Dashboard;
-import uk.co.szmg.grafana.domain.DomainFactories;
 
 import javax.inject.Named;
 

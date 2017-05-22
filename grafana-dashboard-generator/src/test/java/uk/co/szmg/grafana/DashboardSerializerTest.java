@@ -20,11 +20,11 @@ package uk.co.szmg.grafana;
  * #L%
  */
 
+import org.junit.Ignore;
+import org.junit.Test;
 import uk.co.szmg.grafana.domain.Dashboard;
 import uk.co.szmg.grafana.domain.Row;
 import uk.co.szmg.grafana.domain.Target;
-import org.junit.Ignore;
-import org.junit.Test;
 
 import java.io.IOException;
 
