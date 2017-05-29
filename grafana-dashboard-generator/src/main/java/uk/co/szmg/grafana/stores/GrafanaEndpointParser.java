@@ -1,4 +1,4 @@
-package uk.co.szmg.grafana.cli.internal;
+package uk.co.szmg.grafana.stores;
 
 /*-
  * #%L

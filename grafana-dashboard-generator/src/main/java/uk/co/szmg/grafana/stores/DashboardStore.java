@@ -1,4 +1,4 @@
-package uk.co.szmg.grafana.cli.internal;
+package uk.co.szmg.grafana.stores;
 
 /*-
  * #%L
@@ -22,7 +22,7 @@ package uk.co.szmg.grafana.cli.internal;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import uk.co.szmg.grafana.cli.DashboardFactory;
+import uk.co.szmg.grafana.DashboardFactory;
 import uk.co.szmg.grafana.domain.Dashboard;
 
 import java.util.ArrayList;
@@ -30,7 +30,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableList;
 
@@ -73,6 +75,17 @@ public class DashboardStore {
         }
 
         return dupes;
+    }
+
+    public Optional<String> getDuplicatesErrorMessage() {
+        Collection<String> duplicates = getDuplicates();
+        String message = null;
+        if (!duplicates.isEmpty()) {
+            message = String.format("%d duplicates found among dashboards:", duplicates.size());
+
+            message += duplicates.stream().collect(Collectors.joining(", "));
+        }
+        return Optional.ofNullable(message);
     }
 
     public List<Dashboard> getDashboards() {

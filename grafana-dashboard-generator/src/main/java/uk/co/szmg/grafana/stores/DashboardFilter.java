@@ -1,4 +1,4 @@
-package uk.co.szmg.grafana.cli.internal;
+package uk.co.szmg.grafana.stores;
 
 /*-
  * #%L
@@ -66,8 +66,7 @@ public class DashboardFilter {
             for (String s : forceInclude) {
                 Dashboard dashboard = dashboardIndex.get(s);
                 if (dashboard == null) {
-                    System.err.println("Included dashboard cannot be found: " + s);
-                    throw new ExitPlease(-6);
+                    throw new IncludedDashboardIsNotFound(s);
                 }
                 result.add(dashboard);
             }
@@ -92,6 +91,16 @@ public class DashboardFilter {
             if (pattern.matcher(dashboard.getTitle()).find()) {
                 result.add(dashboard);
             }
+        }
+    }
+
+    public static class IncludedDashboardIsNotFound extends IllegalArgumentException {
+
+        private String dashboardTitle;
+
+        public IncludedDashboardIsNotFound(String dashboardTitle) {
+            super("Included dashboard cannot be found: " + dashboardTitle);
+            this.dashboardTitle = dashboardTitle;
         }
     }
 }

@@ -24,6 +24,8 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import uk.co.szmg.grafana.GrafanaEndpoint;
 import uk.co.szmg.grafana.domain.Dashboard;
+import uk.co.szmg.grafana.stores.DashboardFilter;
+import uk.co.szmg.grafana.stores.FileBasedGrafanaEndpointStore;
 
 import java.io.File;
 import java.io.IOException;
@@ -110,7 +112,13 @@ public class CommandLineArgs {
         }
 
         if (dashboardFilter != null) {
-            List<Dashboard> dashboards = dashboardFilter.filter(config.getDashboardStore().getDashboards());
+            List<Dashboard> dashboards;
+            try {
+                dashboards = dashboardFilter.filter(config.getDashboardStore().getDashboards());
+            } catch (DashboardFilter.IncludedDashboardIsNotFound ex) {
+                System.err.println(ex.getMessage());
+                throw new ExitPlease(-6);
+            }
             config.setDashboards(dashboards);
             System.out.println("Dashboards: " + dashboards.stream()
                     .map(Dashboard::getTitle)

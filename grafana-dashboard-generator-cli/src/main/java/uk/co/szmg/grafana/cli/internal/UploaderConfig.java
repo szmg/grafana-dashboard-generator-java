@@ -22,6 +22,8 @@ package uk.co.szmg.grafana.cli.internal;
 
 import uk.co.szmg.grafana.GrafanaEndpoint;
 import uk.co.szmg.grafana.domain.Dashboard;
+import uk.co.szmg.grafana.stores.DashboardStore;
+import uk.co.szmg.grafana.stores.GrafanaEndpointStore;
 
 import java.io.File;
 import java.util.List;

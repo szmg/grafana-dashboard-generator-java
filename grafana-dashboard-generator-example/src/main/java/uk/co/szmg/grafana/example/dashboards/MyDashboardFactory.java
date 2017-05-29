@@ -20,7 +20,7 @@ package uk.co.szmg.grafana.example.dashboards;
  * #L%
  */
 
-import uk.co.szmg.grafana.cli.DashboardFactory;
+import uk.co.szmg.grafana.DashboardFactory;
 import uk.co.szmg.grafana.domain.Dashboard;
 
 import javax.inject.Named;

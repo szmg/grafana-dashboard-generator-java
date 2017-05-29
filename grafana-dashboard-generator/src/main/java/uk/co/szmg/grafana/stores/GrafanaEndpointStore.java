@@ -1,4 +1,4 @@
-package uk.co.szmg.grafana.cli.internal;
+package uk.co.szmg.grafana.stores;
 
 /*-
  * #%L
@@ -45,6 +45,6 @@ public abstract class GrafanaEndpointStore {
         return endpoints;
     }
 
-    protected abstract InputStream getStream();
+    protected abstract InputStream getStream() throws IOException;
 
 }

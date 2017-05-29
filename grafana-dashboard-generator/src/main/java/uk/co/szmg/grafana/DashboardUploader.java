@@ -22,6 +22,8 @@ package uk.co.szmg.grafana;
 
 import uk.co.szmg.grafana.domain.Dashboard;
 
+import java.io.IOException;
+
 /**
  * Serialises and uploads a dashboard to a Grafana endpoint.
  *
@@ -60,7 +62,7 @@ public class DashboardUploader {
         String dashboardJson = dashboardSerializer.toString(dashboard);
         try {
             client.uploadDashboard(dashboardJson, overwrite);
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new RuntimeException(String.format("Error happened during uploading [%s]", dashboard.getTitle()), e);
         }
     }

@@ -21,7 +21,7 @@ package uk.co.szmg.grafana.cli;
  */
 
 import org.junit.Test;
-import uk.co.szmg.grafana.cli.internal.DashboardStore;
+import uk.co.szmg.grafana.stores.DashboardStore;
 import uk.co.szmg.grafana.domain.Dashboard;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package uk.co.szmg.grafana.cli;
+package uk.co.szmg.grafana.stores;
 
 /*-
  * #%L
@@ -20,19 +20,21 @@ package uk.co.szmg.grafana.cli;
  * #L%
  */
 
-import uk.co.szmg.grafana.domain.Dashboard;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
-import java.util.List;
+public class FileBasedGrafanaEndpointStore extends GrafanaEndpointStore {
 
-/**
- * Implementing classes can generate dashboards.
- */
-public interface DashboardFactory {
+    private File source;
 
-    /**
-     * Creates dashboards.
-     * @return a list of dashboards created, should not be {@code null}
-     */
-    List<Dashboard> create();
+    public FileBasedGrafanaEndpointStore(File source) {
+        this.source = source;
+    }
 
+    @Override
+    protected InputStream getStream() throws FileNotFoundException {
+        return new FileInputStream(source);
+    }
 }

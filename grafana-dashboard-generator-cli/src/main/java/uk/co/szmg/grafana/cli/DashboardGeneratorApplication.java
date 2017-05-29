@@ -24,11 +24,11 @@ import org.fusesource.jansi.AnsiConsole;
 import uk.co.szmg.grafana.DashboardSerializer;
 import uk.co.szmg.grafana.DashboardUploader;
 import uk.co.szmg.grafana.GrafanaClient;
-import uk.co.szmg.grafana.cli.internal.ClasspathGrafanaEndpointStore;
+import uk.co.szmg.grafana.stores.ClasspathGrafanaEndpointStore;
 import uk.co.szmg.grafana.cli.internal.CommandLineArgs;
-import uk.co.szmg.grafana.cli.internal.DashboardStore;
+import uk.co.szmg.grafana.stores.DashboardStore;
 import uk.co.szmg.grafana.cli.internal.ExitPlease;
-import uk.co.szmg.grafana.cli.internal.GrafanaEndpointStore;
+import uk.co.szmg.grafana.stores.GrafanaEndpointStore;
 import uk.co.szmg.grafana.cli.internal.Interaction;
 import uk.co.szmg.grafana.cli.internal.UploaderConfig;
 import uk.co.szmg.grafana.domain.Dashboard;
@@ -90,14 +90,10 @@ public class DashboardGeneratorApplication {
         dashboardStore.load();
 
         // check duplicates
-        Collection<String> duplicates = dashboardStore.getDuplicates();
-        if (!duplicates.isEmpty()) {
-            System.err.printf("%d duplicates found among dashboards:", duplicates.size());
-            for (String duplicate : duplicates) {
-                System.err.println("  " + duplicate);
-            }
+        dashboardStore.getDuplicatesErrorMessage().ifPresent(msg -> {
+            System.err.println(msg);
             throw new ExitPlease(-1);
-        }
+        });
 
         // endpoint
         GrafanaEndpointStore endpointStore = config.getEndpointStore();

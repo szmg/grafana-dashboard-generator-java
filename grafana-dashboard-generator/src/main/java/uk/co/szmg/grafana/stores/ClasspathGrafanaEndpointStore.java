@@ -1,4 +1,4 @@
-package uk.co.szmg.grafana.cli.internal;
+package uk.co.szmg.grafana.stores;
 
 /*-
  * #%L
@@ -20,26 +20,18 @@ package uk.co.szmg.grafana.cli.internal;
  * #L%
  */
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-public class FileBasedGrafanaEndpointStore extends GrafanaEndpointStore {
+public class ClasspathGrafanaEndpointStore extends GrafanaEndpointStore {
 
-    private File source;
+    private String path;
 
-    public FileBasedGrafanaEndpointStore(File source) {
-        this.source = source;
+    public ClasspathGrafanaEndpointStore(String path) {
+        this.path = path;
     }
 
     @Override
     protected InputStream getStream() {
-        try {
-            return new FileInputStream(source);
-        } catch (FileNotFoundException e) {
-            System.err.println("Endpoint config file is not found: " + source);
-            throw new ExitPlease(-4);
-        }
+        return getClass().getResourceAsStream(path);
     }
 }

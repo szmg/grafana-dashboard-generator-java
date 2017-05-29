@@ -1,4 +1,4 @@
-package uk.co.szmg.grafana.cli.internal;
+package uk.co.szmg.grafana;
 
 /*-
  * #%L
@@ -20,18 +20,19 @@ package uk.co.szmg.grafana.cli.internal;
  * #L%
  */
 
-import java.io.InputStream;
+import uk.co.szmg.grafana.domain.Dashboard;
 
-public class ClasspathGrafanaEndpointStore extends GrafanaEndpointStore {
+import java.util.List;
 
-    private String path;
+/**
+ * Implementing classes can generate dashboards.
+ */
+public interface DashboardFactory {
 
-    public ClasspathGrafanaEndpointStore(String path) {
-        this.path = path;
-    }
+    /**
+     * Creates dashboards.
+     * @return a list of dashboards created, should not be {@code null}
+     */
+    List<Dashboard> create();
 
-    @Override
-    protected InputStream getStream() {
-        return getClass().getResourceAsStream(path);
-    }
 }
