@@ -16,7 +16,7 @@ Code your Grafana dashboards in Java, more or less type-safe, with auto-complete
 * create and _reuse_ your own frequently used components
 * upload your dashboards to Grafana
 * ApiKey or session cookie authentication
-* upload as part of your build process (Maven plugin) (to be released)
+* upload as part of your build process (Maven plugin)
 * upload with a nice command line tool
 * do not get stuck if the lib is missing a property or a type: add it without needing to recompile the lib (see [below](#flexible-domain-objects))
 * [PLAN] watch code and generate+upload on change (with the fast but limited Janino compiler)
@@ -32,7 +32,7 @@ TODO different use cases, development mode, CD
 <dependency>
     <groupId>uk.co.szmg.grafana</groupId>
     <artifactId>grafana-dashboard-generator</artifactId>
-    <version>1.1.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
