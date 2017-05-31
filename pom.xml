@@ -4,7 +4,7 @@
 
     <groupId>uk.co.szmg.grafana</groupId>
     <artifactId>grafana-dashboard-generator-parent</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>2.0.0</version>
     <packaging>pom</packaging>
 
     <name>Grafana dashboard generator</name>
@@ -28,7 +28,7 @@
         <connection>scm:git:git://github.com/szmg/grafana-dashboard-generator-java.git</connection>
         <developerConnection>scm:git:git@github.com:szmg/grafana-dashboard-generator-java.git</developerConnection>
         <url>https://github.com/szmg/grafana-dashboard-generator-java/tree/master</url>
-      <tag>HEAD</tag>
+      <tag>v2.0.0</tag>
   </scm>
 
     <distributionManagement>
