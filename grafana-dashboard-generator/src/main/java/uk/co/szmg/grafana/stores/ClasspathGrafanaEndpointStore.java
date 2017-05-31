@@ -22,10 +22,17 @@ package uk.co.szmg.grafana.stores;
 
 import java.io.InputStream;
 
+/**
+ * Endpoint store that reads from the classpath.
+ */
 public class ClasspathGrafanaEndpointStore extends GrafanaEndpointStore {
 
     private String path;
 
+    /**
+     * Creates a ClasspathGrafanaEndpointStore.
+     * @param path path of the endpoint yaml file on the classpath of this class
+     */
     public ClasspathGrafanaEndpointStore(String path) {
         this.path = path;
     }

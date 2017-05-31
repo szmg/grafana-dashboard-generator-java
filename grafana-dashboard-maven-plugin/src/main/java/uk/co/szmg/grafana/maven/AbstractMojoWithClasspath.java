@@ -34,11 +34,21 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Provides the {@link #getClassLoader()} method that creates a new classloader
+ * with runtime dependencies, build output directory and resources on classpath.
+ */
 public abstract class AbstractMojoWithClasspath extends AbstractMojo {
 
     @Parameter( defaultValue = "${project}", readonly = true )
     protected MavenProject project;
 
+    /**
+     * Creates and new class loader that has runtime dependencies, build output
+     * and resources on class path.
+     * @return new class loader
+     * @throws MojoFailureException when one of the class path elements is misconfigured, should never happen
+     */
     protected ClassLoader getClassLoader() throws MojoFailureException {
         List<URL> classpath = null;
         try {

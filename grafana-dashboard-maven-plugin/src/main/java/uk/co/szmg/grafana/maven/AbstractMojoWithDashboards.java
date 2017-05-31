@@ -30,20 +30,56 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Provides dashboard loading and filtering support for a mojo.
+ */
 public abstract class AbstractMojoWithDashboards extends AbstractMojoWithClasspath {
 
+    /**
+     * Root package for the Spring context in which {@link Dashboard}s and
+     * {@link uk.co.szmg.grafana.DashboardFactory}s should be looked up.
+     */
     @Parameter(required = true)
     protected String rootPackage;
 
+    /**
+     * Dashboard title regexp to be included.
+     *
+     * <p>If empty and {@code excludes} is not empty, it defaults
+     * to all dashboards.
+     */
     @Parameter
     protected List<String> includes;
 
+    /**
+     * Dashboard title regexp to be excluded.
+     *
+     * <p>Filtering is done after the {@code includes} filter
+     * has been applied. If that is empty, filtering happens
+     * on all dashboards.
+     */
     @Parameter
     protected List<String> excludes;
 
+    /**
+     * Exact dashboard titles to explicitly include.
+     *
+     * <p>This will add any matching dashboards after the filtering.
+     * This means that a dashboard can be excluded, but if it is added
+     * to {@code forceInclude}, it will be taken into account.
+     *
+     * <p>Providing not existing dashboard title will result
+     * in BUILD FAILURE.
+     */
     @Parameter
     protected List<String> forceInclude;
 
+    /**
+     * Loads, filters and gets dashboards.
+     * @return list of dashboards
+     * @throws MojoFailureException when dashboards cannot be found
+     * @throws MojoFailureException when there are more dashboard with the same title
+     */
     protected List<Dashboard> loadDashboards() throws MojoFailureException {
         final DashboardStore dashboardStore = new DashboardStore(rootPackage);
         Thread thread = new Thread("dashboard-loader") {

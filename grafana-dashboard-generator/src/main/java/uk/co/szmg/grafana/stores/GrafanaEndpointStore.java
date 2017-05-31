@@ -27,10 +27,17 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
 
+/**
+ * Loads and provides endpoint data.
+ */
 public abstract class GrafanaEndpointStore {
 
     private Map<String, GrafanaEndpoint> endpoints;
 
+    /**
+     * Loads endpoints.
+     * @throws IOException when cannot read the underlying stream
+     */
     public void load() throws IOException {
         try (InputStream stream = getStream()) {
             if (stream != null) {
@@ -41,10 +48,19 @@ public abstract class GrafanaEndpointStore {
         }
     }
 
+    /**
+     * Gets endpoints by their names.
+     * @return endpoints, indexed by their names
+     */
     public Map<String, GrafanaEndpoint> getEndpoints() {
         return endpoints;
     }
 
+    /**
+     * Gets the stream to parse for endpoints.
+     * @return an open InputStream, or {@code null} if there are no endpoints to read
+     * @throws IOException when something goes wrong
+     */
     protected abstract InputStream getStream() throws IOException;
 
 }

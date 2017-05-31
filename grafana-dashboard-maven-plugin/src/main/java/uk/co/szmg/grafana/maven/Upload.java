@@ -36,21 +36,45 @@ import java.io.IOException;
 @Mojo(name = "upload", defaultPhase = LifecyclePhase.DEPLOY)
 public class Upload extends AbstractMojo {
 
+    /**
+     * Source directory where Grafana Json files are.
+     */
     @Parameter(property = "grafana.sourceDir", defaultValue = "${project.build.directory}/grafana-dashboards", required = true)
     protected File inputDirectory;
 
+    /**
+     * When {@code true}, existing Grafana dashboards will be overwritten.
+     */
     @Parameter(property = "grafana.overwrite", defaultValue = "false", required = true)
     protected boolean overwrite;
 
+    /**
+     * Grafana URL.
+     */
     @Parameter(property = "grafana.url", required = true)
     protected String url;
 
+    /**
+     * Grafana session cookie value for authentication.
+     *
+     * <p>Authentication can happen through session
+     * cookie (this) or API key ({@code apiKey} parameter).
+     */
     @Parameter(property = "grafana.sessionCookie")
     protected String sessionCookie;
 
+    /**
+     * Grafana API key for authentication.
+     *
+     * <p>Authentication can happen through session
+     * cookie ({@code sessionCookie} parameter) or API key (this).
+     */
     @Parameter(property = "grafana.apiKey")
     protected String apiKey;
 
+    /**
+     * Skips SSL certificate validation if {@code true}.
+     */
     @Parameter(property = "grafana.skipSSLValidation", defaultValue = "false", required = true)
     protected boolean skipSSLValidation;
 

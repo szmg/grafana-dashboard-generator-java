@@ -46,6 +46,9 @@ import java.util.Optional;
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyResolution = ResolutionScope.RUNTIME)
 public class Generate extends AbstractMojoWithDashboards {
 
+    /**
+     * Output directory for the Grafana Json files.
+     */
     @Parameter(defaultValue = "${project.build.directory}/grafana-dashboards", required = true)
     protected File outputDirectory;
 

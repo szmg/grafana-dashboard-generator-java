@@ -36,16 +36,37 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableList;
 
+/**
+ * Loads and provides dashboards.
+ *
+ * <p>First, an annotation based Spring context is built
+ * in {@code rootPackage}. Then every {@link DashboardFactory}
+ * beans are looked up and invoked to create dashboards.
+ * Finally, all {@link Dashboard} beans are read.
+ *
+ * <p>This class can also return the duplicated dashboards.
+ * Two dashboards are duplicated if their titles are equal.
+ */
 public class DashboardStore {
 
     private String rootPackage;
 
     private List<Dashboard> dashboards;
 
+    /**
+     * Creates a DashboardStore.
+     * @param rootPackage root package of the annotation based spring context to be searched
+     */
     public DashboardStore(String rootPackage) {
         this.rootPackage = rootPackage;
     }
 
+    /**
+     * Loads dashboards.
+     *
+     * <p>This will create the Spring context and look for
+     * {@link DashboardFactory} and {@link Dashboard} implementations.
+     */
     public void load() {
         List<Dashboard> dashboards = new ArrayList<>();
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(rootPackage);
@@ -61,6 +82,15 @@ public class DashboardStore {
         this.dashboards = unmodifiableList(dashboards);
     }
 
+    /**
+     * Gets a list of dashboard titles that presents
+     * more than once among the dashboards.
+     *
+     * <p>Grafana treats them as equal, so there is no point
+     * uploading them twice.
+     *
+     * @return list of dashboard titles
+     */
     public Collection<String> getDuplicates() {
         Set<String> all = new HashSet<>();
         Set<String> dupes = new HashSet<>();
@@ -77,6 +107,10 @@ public class DashboardStore {
         return dupes;
     }
 
+    /**
+     * Gets an error message with the list of duplicated dashboards if any.
+     * @return an error message if there are duplicates, otherwise {@code Optional.empty()}
+     */
     public Optional<String> getDuplicatesErrorMessage() {
         Collection<String> duplicates = getDuplicates();
         String message = null;
@@ -88,6 +122,10 @@ public class DashboardStore {
         return Optional.ofNullable(message);
     }
 
+    /**
+     * Gets all dashboards.
+     * @return list of dashboards
+     */
     public List<Dashboard> getDashboards() {
         return dashboards;
     }

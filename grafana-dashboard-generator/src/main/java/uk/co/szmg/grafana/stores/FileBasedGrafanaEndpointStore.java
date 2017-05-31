@@ -25,10 +25,17 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+/**
+ * Endpoint store that reads from file.
+ */
 public class FileBasedGrafanaEndpointStore extends GrafanaEndpointStore {
 
     private File source;
 
+    /**
+     * Creates a FileBasedGrafanaEndpointStore.
+     * @param source path of the endpoint config yaml file
+     */
     public FileBasedGrafanaEndpointStore(File source) {
         this.source = source;
     }
